@@ -6,7 +6,7 @@
 * Picamera module
 * Arduino Uno
 * Stepper Motors
-* Recycled 3D Printer
+* 3D Printer Parts
 
 # Setup
 ```bash
