@@ -5,6 +5,7 @@
 * Raspberry Pi
 * Picamera module
 * Arduino Uno
+* Motor driver boards
 * Stepper Motors
 * 3D Printer Parts
 
