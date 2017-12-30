@@ -41,7 +41,7 @@ class MAIN(QMainWindow):
     def initUI(self):    
         ''' Initiates application UI '''
         self.logger.info("REMBOT v0.0.1")
-        
+
         self.rembot = Rembot(self)
         self.setCentralWidget(self.rembot)
 
@@ -108,9 +108,12 @@ class Rembot(QWidget):
         self.logger.info(msg)
 
 
-
-if __name__ == '__main__':
+def run():
     """ Run program """
     app = QApplication(sys.argv)
     main = MAIN()
     sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
+    run()
