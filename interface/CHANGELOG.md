@@ -5,6 +5,8 @@ Tracking changes in the gui.
 ### Added
 - Changelog
 - Rembot python package
+- Logging
+- Widget subclass in the main event class
 
 
 &nbsp;
