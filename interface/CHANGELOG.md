@@ -1,7 +1,7 @@
 # Interface CHANGELOG
 Tracking changes in the gui.
 
-## Unreleased - YYYY-MMM-DD
+## [Unreleased] - YYYY-MMM-DD
 ### Added
 - Changelog
 - Rembot python package
@@ -15,3 +15,5 @@ Tracking changes in the gui.
 - Image processing algorithm
 - Bindings for image processing
 - Pygame interface
+
+[Unreleased](https://)
