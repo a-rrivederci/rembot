@@ -7,6 +7,9 @@ Tracking changes in the gui.
 - Rembot python package
 - Logging
 - Widget subclass in the main event class
+- About menu action
+- Hide log display
+- System status class
 
 
 &nbsp;
