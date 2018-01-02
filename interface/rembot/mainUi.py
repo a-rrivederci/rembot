@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import ( QMainWindow, QDesktopWidget,
     QApplication, QMessageBox, QSizePolicy, QMenu, QLayout, 
     QVBoxLayout, QHBoxLayout, QLabel, QGroupBox, QLineEdit, QGridLayout, 
     QPushButton, QTextBrowser, QAction )
-from PyQt5.QtCore import Qt, QMetaObject, QCoreApplication, QSize
+from PyQt5.QtCore import Qt, QThread, QMetaObject, QCoreApplication, QSize
 from PyQt5.QtGui import QFont, QIcon, QPixmap
 
 from rembotUi import RembotUI
@@ -24,21 +24,26 @@ class MainUI(QMainWindow):
     def __init__(self):
         super().__init__()
         self.initUI()
-        
-        # Logging
-        self.logger = self.RembotUI.log.setLogger(__name__) # set logger mainUi
+    
+        self.RembotUI.updateStatus("Initializing...") # status update
 
+        self.Log = self.RembotUI.Log
+        self.Log.infoLog("Initializing!") # log
+        self.Log.infoLog("Warning!") # log
+
+        self.RembotUI.updateStatus("Ready") # status update
+        
     def initUI(self):
         ''' Initiates application UI '''
-        # MainUI
-        self.setObjectName('MainUI') 
-        self.resize(1653, 1160)
-
         # Rembot ui class
         self.RembotUI = RembotUI(self)
 
         # Set central widget at RembotUI
         self.setCentralWidget(self.RembotUI)
+
+        # MainUI
+        self.setObjectName('MainUI') 
+        self.resize(1653, 1160)
 
         # Statusbar and Menubar
         # statusbar
@@ -121,9 +126,10 @@ class MainUI(QMainWindow):
         ## Menubar
         # self.action_about.triggered.connect()
         self.action_log.toggled['bool'].connect(self.RembotUI.log_box.setVisible)
+        #
         self.action_exit.triggered.connect(self.close)
         self.RembotUI.quit_button.clicked.connect(self.close)
-
+    
     def center(self):
         ''' Centers the window on the screen '''
         screen = QDesktopWidget().screenGeometry()
@@ -133,11 +139,14 @@ class MainUI(QMainWindow):
 
     def closeEvent(self, event):
         ''' Close program dialog box '''
+        self.Log.infoLog("Exit?") # log
         reply = QMessageBox.question(self, 'Exit ?',
             "Are you sure to quit?", QMessageBox.Yes | 
             QMessageBox.No, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
             event.accept()
+            self.Log.infoLog("Goodbye!") # log
         else:
             event.ignore()
+            self.Log.infoLog("Exit Aborted!") # log

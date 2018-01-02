@@ -8,12 +8,13 @@ License is available in LICENSE
 @since 2017-DEC-28
 """
 
-from PyQt5.QtWidgets import ( QMainWindow, QWidget, QDesktopWidget, 
-    QApplication, QMessageBox, QSizePolicy, QMenu, QLayout, 
+import time
+from PyQt5.QtWidgets import ( QWidget, 
+    QSizePolicy, QLayout, 
     QVBoxLayout, QHBoxLayout, QLabel, QGroupBox, QLineEdit, QGridLayout, 
-    QPushButton, QTextEdit, QAction, QSpacerItem )
-from PyQt5.QtCore import Qt, pyqtSignal, QMetaObject, QCoreApplication, QSize
-from PyQt5.QtGui import QFont, QIcon, QPixmap, QCursor
+    QPushButton, QTextEdit, QSpacerItem )
+from PyQt5.QtCore import Qt, pyqtSignal, QThread, QMetaObject, QCoreApplication, QSize
+from PyQt5.QtGui import QFont, QPixmap, QCursor
 
 from systemStatus import Log
 
@@ -25,9 +26,10 @@ class RembotUI(QWidget):
         super().__init__(parent)
         self.initRembotUI()
 
-        # Logging
-        self.log = Log() # instance of Log class
-        self.logger = self.log.setLogger(__name__) # set logger rembotUi  
+        # Log class
+        self.Log = Log(self)
+        self.Log.log_data[str].connect(self.toLog)
+
 
     def initRembotUI(self):
         ''' Rembot UI '''
@@ -181,10 +183,10 @@ class RembotUI(QWidget):
         self.log_layout.setObjectName("log_layout")
         ##### Log output
         self.log_output = QTextEdit(self.log_box)
-        self.log_output.setMinimumSize(QSize(720, 0))
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+        self.log_output.setMinimumSize(QSize(720, 600))
+        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.log_output.sizePolicy().hasHeightForWidth())
         self.log_output.setSizePolicy(sizePolicy)
         self.log_output.setReadOnly(True)
@@ -195,9 +197,9 @@ class RembotUI(QWidget):
         ### Add Log box to Left box
         self.left_box.addWidget(self.log_box)
         #### Left spacer
-        spacerItem = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.MinimumExpanding)
+        self.spacer_item = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.MinimumExpanding)
         ### Add spacer to Log box
-        self.left_box.addItem(spacerItem)
+        self.left_box.addItem(self.spacer_item)
         ## Add Left box to Content box
         self.content_box.addLayout(self.left_box)
 
@@ -276,24 +278,17 @@ class RembotUI(QWidget):
 
     def attachEvents(self):
         ''' Attach signals to events '''
-        # self.start_button.clicked.connect()
+        self.start_button.clicked.connect(self.start)
         # self.stop_button.clicked.connect()
         
-    def connect():
-        ''' Connect to Rembot serial device '''
-
     def start(self):
-        ''' Start image capturing sequence '''
-    
-    def pause(self):
-        ''' Pause drawing execution '''
-    
-    def stop(self):
-        ''' Stop image-processing or drawing '''
-    
-    def quit(self):
-        ''' Quit program '''
+        ''' Start program '''
+        self.Log.warningLog("Start Clicked!") # log
     
     def updateStatus(self, msg):
         ''' Update the program statusbar string and log '''
         self.status_message.emit( str(msg) )
+
+    def toLog(self, msg):
+        ''' '''
+        self.log_output.append(msg)

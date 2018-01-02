@@ -11,10 +11,15 @@ License is available in LICENSE
 import io
 import sys
 import logging
+from PyQt5.QtCore import pyqtSignal, QObject
 
 
-class Log(object):
-    def __init__(self):
+class Log(QObject):
+    log_data = pyqtSignal(str)
+
+    def __init__(self, parent):
+        super().__init__(parent)
+        
         root_logger = logging.getLogger("rembot")
         root_logger.setLevel(level=logging.INFO)
         self.logger_io = io.StringIO()
@@ -24,12 +29,11 @@ class Log(object):
             datefmt='%H:%M:%S')
         log_handler.setFormatter(log_formatter)
         root_logger.addHandler(log_handler)
-    
-    def setLogger(self, name):
-        return logging.getLogger("rembot." + name)
+
+        self.logger = logging.getLogger("rembot.ui")
 
     def updateLog(self):
-        ''' Update the program log screen '''
+        ''' Update the program log data '''
         log = '' # initialize empty log string
         buffer = self.logger_io.getvalue() # get logger stream
         for i in buffer:  # Remove empty lines
@@ -40,14 +44,17 @@ class Log(object):
         print(log) # stdout
         return log
     
-    def displayInfoLog(self, object, output, msg):
-        object.logger.warning(msg)
-        output.log_output.append( self.updateLog() ) # interface log
+    def infoLog(self, msg):
+        self.logger.info(msg)
+        self.log_data.emit( self.updateLog() )
 
-    def displayWarningLog(self, object, output, msg):
-        object.logger.warning(msg)
-        output.log_output.append( self.updateLog() ) # interface log
+    def warningLog(self, msg):
+        self.logger.warning(msg)
+        self.log_data.emit( self.updateLog() )
     
-    def displayErrorLog(self, object, output, msg):
-        object.logger.error(msg)
-        output.log_output.append( self.updateLog() ) # interface log
+    def errorLog(self, msg):
+        self.logger.error(msg)
+        self.log_data.emit( self.updateLog() )
+    
+    def __del__(self):
+        self.logger_io.close()

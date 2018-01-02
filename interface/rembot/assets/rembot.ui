@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Main</class>
- <widget class="QMainWindow" name="Main">
+ <class>MainUI</class>
+ <widget class="QMainWindow" name="MainUI">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -34,7 +34,7 @@
   <property name="styleSheet">
    <string notr="true"/>
   </property>
-  <widget class="QWidget" name="Rembot">
+  <widget class="QWidget" name="RembotUI">
    <property name="enabled">
     <bool>true</bool>
    </property>
@@ -324,26 +324,29 @@
            <property name="bottomMargin">
             <number>0</number>
            </property>
-           <item>
-            <widget class="QTextBrowser" name="log_output">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>720</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="horizontalScrollBarPolicy">
-              <enum>Qt::ScrollBarAlwaysOff</enum>
-             </property>
-            </widget>
-           </item>
           </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextEdit" name="log_output">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>1</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item>
@@ -563,7 +566,7 @@
   <connection>
    <sender>action_exit</sender>
    <signal>triggered()</signal>
-   <receiver>Main</receiver>
+   <receiver>MainUI</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -579,7 +582,7 @@
   <connection>
    <sender>start_button</sender>
    <signal>clicked()</signal>
-   <receiver>Rembot</receiver>
+   <receiver>RembotUI</receiver>
    <slot>update()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -595,7 +598,7 @@
   <connection>
    <sender>quit_button</sender>
    <signal>clicked()</signal>
-   <receiver>Main</receiver>
+   <receiver>MainUI</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -611,7 +614,7 @@
   <connection>
    <sender>stop_button</sender>
    <signal>clicked()</signal>
-   <receiver>Rembot</receiver>
+   <receiver>RembotUI</receiver>
    <slot>update()</slot>
    <hints>
     <hint type="sourcelabel">
