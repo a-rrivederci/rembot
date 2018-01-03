@@ -10,6 +10,11 @@ Tracking changes in the gui.
 - About menu action
 - Hide log display
 - System status class
+- Displays input image
+
+### Changed
+- Moved software into interface
+- renamed software folder to interface_0.0.1
 
 
 &nbsp;

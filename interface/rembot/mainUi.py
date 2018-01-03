@@ -28,8 +28,8 @@ class MainUI(QMainWindow):
         self.RembotUI.updateStatus("Initializing...") # status update
 
         self.Log = self.RembotUI.Log
-        self.Log.infoLog("Initializing!") # log
-        self.Log.infoLog("Warning!") # log
+        self.Log.infoLog("Initializing...") # log
+        self.Log.infoLog("REMBOT v0.0.1") # log
 
         self.RembotUI.updateStatus("Ready") # status update
         
@@ -90,7 +90,7 @@ class MainUI(QMainWindow):
         self.setFont(font)
         # Set Icon
         icon = QIcon()
-        icon.addPixmap(QPixmap("interface/rembot/assets/icon.png"), QIcon.Normal, QIcon.Off)
+        icon.addPixmap(QPixmap("interface/rembot/assets/images/icon.png"), QIcon.Normal, QIcon.Off)
         self.setWindowIcon(icon)
         # MainUI Styles
         self.setLayoutDirection(Qt.LeftToRight)

@@ -8,6 +8,7 @@ License is available in LICENSE
 @since 2017-DEC-28
 """
 
+import os
 import time
 from PyQt5.QtWidgets import ( QWidget, 
     QSizePolicy, QLayout, 
@@ -21,6 +22,7 @@ from systemStatus import Log
 
 class RembotUI(QWidget):
     status_message = pyqtSignal(str)
+    images_path = "interface/rembot/assets/images/"
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -29,7 +31,6 @@ class RembotUI(QWidget):
         # Log class
         self.Log = Log(self)
         self.Log.log_data[str].connect(self.toLog)
-
 
     def initRembotUI(self):
         ''' Rembot UI '''
@@ -219,7 +220,7 @@ class RembotUI(QWidget):
         self.original_img = QLabel(self.original_img_box)
         self.original_img.setMinimumSize(QSize(720, 400))
         self.original_img.setText("")
-        self.original_img.setPixmap(QPixmap("interface/rembot/assets/default.jpg"))
+        self.original_img.setPixmap(QPixmap( self.images_path + "default.jpg"))
         self.original_img.setScaledContents(True)
         self.original_img.setObjectName("original_img")
         #### Add Original image to Original image Layout
@@ -239,7 +240,7 @@ class RembotUI(QWidget):
         self.output_img = QLabel(self.output_img_box)
         self.output_img.setMinimumSize(QSize(720, 400))
         self.output_img.setText("")
-        self.output_img.setPixmap(QPixmap("interface/rembot/assets/default.jpg"))
+        self.output_img.setPixmap(QPixmap( self.images_path + "default.jpg"))
         self.output_img.setScaledContents(True)
         self.output_img.setObjectName("output_img")
         #### Add Output img to output image layout
@@ -283,8 +284,15 @@ class RembotUI(QWidget):
         
     def start(self):
         ''' Start program '''
-        self.Log.warningLog("Start Clicked!") # log
-    
+
+        file_path = self.images_path + self.file_input.text() # specify filepath
+        if  (os.path.exists(file_path) == True) and (file_path[-1] != '/'):
+            self.Log.warningLog("Loading File") # log
+            self.original_img.setPixmap(QPixmap( file_path )) # update display image
+        else:
+            self.Log.warningLog("File does not exist") # log
+        
+
     def updateStatus(self, msg):
         ''' Update the program statusbar string and log '''
         self.status_message.emit( str(msg) )
