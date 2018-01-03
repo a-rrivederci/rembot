@@ -8,47 +8,42 @@ License is available in LICENSE
 @since 2017-DEC-28
 """
 
-import logging
-from PyQt5.QtWidgets import ( QMainWindow, QDesktopWidget, 
-    QApplication, QMessageBox, QSizePolicy, QMenu, QLayout, 
-    QVBoxLayout, QHBoxLayout, QLabel, QGroupBox, QLineEdit, QGridLayout, 
-    QPushButton, QTextBrowser, QAction )
-from PyQt5.QtCore import Qt, QThread, QMetaObject, QCoreApplication, QSize
+from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QMessageBox, QSizePolicy, QMenu, QAction
+from PyQt5.QtCore import Qt, QMetaObject, QCoreApplication
 from PyQt5.QtGui import QFont, QIcon, QPixmap
 
-from rembotUi import RembotUI
+from core_ui import CoreUI
 
 
 class MainUI(QMainWindow):
-
+    ''' Main UI class '''
     def __init__(self):
         super().__init__()
-        self.initUI()
-    
-        self.RembotUI.updateStatus("Initializing...") # status update
+        self.init_ui()
+        self.CoreUI.updateStatus("Initializing...") # status update
 
-        self.Log = self.RembotUI.Log
-        self.Log.infoLog("Initializing...") # log
-        self.Log.infoLog("REMBOT v0.0.1") # log
+        self.log = self.CoreUI.log
+        self.log.infoLog("Initializing...") # log
+        self.log.infoLog("REMBOT v0.0.1") # log
 
-        self.RembotUI.updateStatus("Ready") # status update
-        
-    def initUI(self):
+        self.CoreUI.updateStatus("Ready") # status update
+
+    def init_ui(self):
         ''' Initiates application UI '''
         # Rembot ui class
-        self.RembotUI = RembotUI(self)
+        self.CoreUI = CoreUI(self)
 
-        # Set central widget at RembotUI
-        self.setCentralWidget(self.RembotUI)
+        # Set central widget at CoreUI
+        self.setCentralWidget(self.CoreUI)
 
         # MainUI
-        self.setObjectName('MainUI') 
+        self.setObjectName('MainUI')
         self.resize(1653, 1160)
 
         # Statusbar and Menubar
         # statusbar
-        self.statusbar = self.statusBar()        
-        self.RembotUI.status_message[str].connect(self.statusbar.showMessage)
+        self.statusbar = self.statusBar()
+        self.CoreUI.status_message[str].connect(self.statusbar.showMessage)
         # meunbar
         self.menubar = self.menuBar()
         self.rembot_menu = QMenu(self.menubar)
@@ -73,17 +68,16 @@ class MainUI(QMainWindow):
         self.rembot_menu.addAction(self.action_about) # about
         self.rembot_menu.addAction(self.view_menu.menuAction()) # view
         self.rembot_menu.addSeparator()
-        self.rembot_menu.addAction(self.action_exit) # exit           
+        self.rembot_menu.addAction(self.action_exit) # exit
         # Add Rembot menu to MainUI Window
         self.menubar.addAction(self.rembot_menu.menuAction())
 
-
         # Set sizing
-        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.sizePolicy().hasHeightForWidth())
-        self.setSizePolicy(sizePolicy)
+        size_policy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        size_policy.setHorizontalStretch(0)
+        size_policy.setVerticalStretch(0)
+        size_policy.setHeightForWidth(self.sizePolicy().hasHeightForWidth())
+        self.setSizePolicy(size_policy)
         # Set Font
         font = QFont()
         font.setFamily("Lucida Console")
@@ -95,19 +89,19 @@ class MainUI(QMainWindow):
         # MainUI Styles
         self.setLayoutDirection(Qt.LeftToRight)
         self.setStyleSheet("")
-        
+
         # Add text labelling
-        self.retranslateUi()
+        self.retranslate_ui()
         QMetaObject.connectSlotsByName(self)
 
         # Attach signals
-        self.attachEvents()
+        self.attach_events()
 
         # Position and show Window
-        self.center()       
+        self.center()
         self.show()
-    
-    def retranslateUi(self):
+
+    def retranslate_ui(self):
         ''' UI Text '''
         _translate = QCoreApplication.translate
         self.setWindowTitle('Rembot')
@@ -121,32 +115,30 @@ class MainUI(QMainWindow):
         self.action_log.setText(_translate('MainUI', 'Log'))
         self.action_log.setShortcut(_translate('MainUI', 'Ctrl+L'))
 
-    def attachEvents(self):
+    def attach_events(self):
         ''' Attach MainUI Ui events '''
         ## Menubar
         # self.action_about.triggered.connect()
-        self.action_log.toggled['bool'].connect(self.RembotUI.log_box.setVisible)
+        self.action_log.toggled['bool'].connect(self.CoreUI.log_box.setVisible)
         #
         self.action_exit.triggered.connect(self.close)
-        self.RembotUI.quit_button.clicked.connect(self.close)
-    
+        self.CoreUI.quit_button.clicked.connect(self.close)
+
     def center(self):
         ''' Centers the window on the screen '''
         screen = QDesktopWidget().screenGeometry()
         size = self.geometry()
-        self.move((screen.width()-size.width())/2, 
-            (screen.height()-size.height())/2)
+        self.move((screen.width()-size.width())/2, (screen.height()-size.height())/2)
 
     def closeEvent(self, event):
         ''' Close program dialog box '''
-        self.Log.infoLog("Exit?") # log
-        reply = QMessageBox.question(self, 'Exit ?',
-            "Are you sure to quit?", QMessageBox.Yes | 
-            QMessageBox.No, QMessageBox.No)
+        self.log.infoLog("Exit?") # log
+        reply = QMessageBox.question(self, 'Exit ?', "Are you sure to quit?", \
+        QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
             event.accept()
-            self.Log.infoLog("Goodbye!") # log
+            self.log.infoLog("Goodbye!") # log
         else:
             event.ignore()
-            self.Log.infoLog("Exit Aborted!") # log
+            self.log.infoLog("Exit Aborted!") # log

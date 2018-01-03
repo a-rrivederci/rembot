@@ -9,12 +9,12 @@ License is available in LICENSE
 """
 
 import io
-import sys
 import logging
 from PyQt5.QtCore import pyqtSignal, QObject
 
 
 class Log(QObject):
+    ''' Logging class '''
     log_data = pyqtSignal(str)
 
     def __init__(self, parent):
@@ -43,7 +43,7 @@ class Log(QObject):
         self.logger_io.seek(0)
         print(log) # stdout
         return log
-    
+
     def infoLog(self, msg):
         self.logger.info(msg)
         self.log_data.emit( self.updateLog() )
@@ -51,10 +51,10 @@ class Log(QObject):
     def warningLog(self, msg):
         self.logger.warning(msg)
         self.log_data.emit( self.updateLog() )
-    
+
     def errorLog(self, msg):
         self.logger.error(msg)
         self.log_data.emit( self.updateLog() )
-    
+
     def __del__(self):
         self.logger_io.close()

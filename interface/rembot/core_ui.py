@@ -3,7 +3,7 @@
 
 """
 License is available in LICENSE
-@brief RembotUI
+@brief CoreUI
 @author eeshiken
 @since 2017-DEC-28
 """
@@ -17,24 +17,24 @@ from PyQt5.QtWidgets import ( QWidget,
 from PyQt5.QtCore import Qt, pyqtSignal, QThread, QMetaObject, QCoreApplication, QSize
 from PyQt5.QtGui import QFont, QPixmap, QCursor
 
-from systemStatus import Log
+from system_status import Log
 
 
-class RembotUI(QWidget):
+class CoreUI(QWidget):
     status_message = pyqtSignal(str)
     images_path = "interface/rembot/assets/images/"
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.initRembotUI()
+        self.init_ui()
 
         # Log class
-        self.Log = Log(self)
-        self.Log.log_data[str].connect(self.toLog)
+        self.log = Log(self)
+        self.log.log_data[str].connect(self.toLog)
 
-    def initRembotUI(self):
+    def init_ui(self):
         ''' Rembot UI '''
-        self.setObjectName("RembotUI")
+        self.setObjectName("CoreUI")
 
         # UI Contaier
         self.ui_container = QVBoxLayout(self)
@@ -54,8 +54,8 @@ class RembotUI(QWidget):
         font.setWeight(75)
         self.header_title = QLabel()
         self.header_title.setFont(font)
-        self.header_title.setCursor( QCursor(Qt.ArrowCursor) )
-        self.header_title.setLayoutDirection( Qt.LeftToRight )
+        self.header_title.setCursor(QCursor(Qt.ArrowCursor))
+        self.header_title.setLayoutDirection(Qt.LeftToRight)
         self.header_title.setStyleSheet("color: rgb(108, 204, 227);")
         self.header_title.setScaledContents(False)
         self.header_title.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
@@ -97,11 +97,11 @@ class RembotUI(QWidget):
         font.setPointSize(10)
         self.file_label = QLabel()
         self.file_label.setFont(font)
-        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.file_label.sizePolicy().hasHeightForWidth())
-        self.file_label.setSizePolicy(sizePolicy)
+        size_policy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        size_policy.setHorizontalStretch(0)
+        size_policy.setVerticalStretch(0)
+        size_policy.setHeightForWidth(self.file_label.sizePolicy().hasHeightForWidth())
+        self.file_label.setSizePolicy(size_policy)
         self.file_label.setObjectName("file_label")
         ### Add label to File box
         self.file_box.addWidget(self.file_label)
@@ -111,11 +111,11 @@ class RembotUI(QWidget):
         font.setPointSize(20)
         self.file_input = QLineEdit()
         self.file_input.setFont(font)
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.file_input.sizePolicy().hasHeightForWidth())
-        self.file_input.setSizePolicy(sizePolicy)
+        size_policy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        size_policy.setHorizontalStretch(0)
+        size_policy.setVerticalStretch(0)
+        size_policy.setHeightForWidth(self.file_input.sizePolicy().hasHeightForWidth())
+        self.file_input.setSizePolicy(size_policy)
         self.file_input.setMinimumSize(QSize(0, 0))
         self.file_input.setAcceptDrops(True)
         self.file_input.setLayoutDirection(Qt.LeftToRight)
@@ -135,36 +135,36 @@ class RembotUI(QWidget):
         self.button_box.setObjectName("button_box")
         ##### Start Button
         self.start_button = QPushButton()
-        sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.start_button.sizePolicy().hasHeightForWidth())
-        self.start_button.setSizePolicy(sizePolicy)
+        size_policy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        size_policy.setHorizontalStretch(0)
+        size_policy.setVerticalStretch(0)
+        size_policy.setHeightForWidth(self.start_button.sizePolicy().hasHeightForWidth())
+        self.start_button.setSizePolicy(size_policy)
         self.start_button.setObjectName("start_button")
         ##### Stop Button
         self.stop_button = QPushButton()
-        sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.stop_button.sizePolicy().hasHeightForWidth())
-        self.stop_button.setSizePolicy(sizePolicy)
+        size_policy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        size_policy.setHorizontalStretch(0)
+        size_policy.setVerticalStretch(0)
+        size_policy.setHeightForWidth(self.stop_button.sizePolicy().hasHeightForWidth())
+        self.stop_button.setSizePolicy(size_policy)
         self.stop_button.setObjectName("stop_button")
         ##### Test Button
         self.test_button = QPushButton()
         self.test_button.setEnabled(False)
-        sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.test_button.sizePolicy().hasHeightForWidth())
-        self.test_button.setSizePolicy(sizePolicy)
+        size_policy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        size_policy.setHorizontalStretch(0)
+        size_policy.setVerticalStretch(0)
+        size_policy.setHeightForWidth(self.test_button.sizePolicy().hasHeightForWidth())
+        self.test_button.setSizePolicy(size_policy)
         self.test_button.setObjectName("test_button")
         ##### Quit Button
         self.quit_button = QPushButton()
-        sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.quit_button.sizePolicy().hasHeightForWidth())
-        self.quit_button.setSizePolicy(sizePolicy)
+        size_policy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        size_policy.setHorizontalStretch(0)
+        size_policy.setVerticalStretch(0)
+        size_policy.setHeightForWidth(self.quit_button.sizePolicy().hasHeightForWidth())
+        self.quit_button.setSizePolicy(size_policy)
         self.quit_button.setObjectName("quit_button")
         #### Add Buttons to Button Box
         self.button_box.addWidget(self.start_button, 0, 0, 1, 1)
@@ -185,11 +185,11 @@ class RembotUI(QWidget):
         ##### Log output
         self.log_output = QTextEdit(self.log_box)
         self.log_output.setMinimumSize(QSize(720, 600))
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.MinimumExpanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(1)
-        sizePolicy.setHeightForWidth(self.log_output.sizePolicy().hasHeightForWidth())
-        self.log_output.setSizePolicy(sizePolicy)
+        size_policy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.MinimumExpanding)
+        size_policy.setHorizontalStretch(0)
+        size_policy.setVerticalStretch(1)
+        size_policy.setHeightForWidth(self.log_output.sizePolicy().hasHeightForWidth())
+        self.log_output.setSizePolicy(size_policy)
         self.log_output.setReadOnly(True)
         self.log_output.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.log_output.setObjectName("log_output")
@@ -256,28 +256,28 @@ class RembotUI(QWidget):
         self.ui_container.addLayout(self.content_box) # add content box to layout
 
         # Labelling
-        self.retranslateUi()
+        self.retranslate_ui()
         QMetaObject.connectSlotsByName(self)
 
         # Attach signals
-        self.attachEvents()
+        self.attach_events()
         
-    def retranslateUi(self):
+    def retranslate_ui(self):
         ''' UI Text '''
         _translate = QCoreApplication.translate
-        self.header_title.setText(_translate("RembotUI", "REMBOT"))
-        self.version_number.setText(_translate("RembotUI", ""))
-        self.file_label.setText(_translate("RembotUI", "File name"))
-        self.file_input.setPlaceholderText(_translate("RembotUI", "image.ext"))
-        self.start_button.setText(_translate("RembotUI", "START"))
-        self.stop_button.setText(_translate("RembotUI", "STOP"))
-        self.test_button.setText(_translate("RembotUI", "TEST"))
-        self.quit_button.setText(_translate("RembotUI", "QUIT"))
-        self.log_box.setTitle(_translate("RembotUI", "Log"))
-        self.original_img_box.setTitle(_translate("RembotUI", "Original Image"))
-        self.output_img_box.setTitle(_translate("RembotUI", "Output Image"))
+        self.header_title.setText(_translate("CoreUI", "REMBOT"))
+        self.version_number.setText(_translate("CoreUI", ""))
+        self.file_label.setText(_translate("CoreUI", "File name"))
+        self.file_input.setPlaceholderText(_translate("CoreUI", "image.ext"))
+        self.start_button.setText(_translate("CoreUI", "START"))
+        self.stop_button.setText(_translate("CoreUI", "STOP"))
+        self.test_button.setText(_translate("CoreUI", "TEST"))
+        self.quit_button.setText(_translate("CoreUI", "QUIT"))
+        self.log_box.setTitle(_translate("CoreUI", "Log"))
+        self.original_img_box.setTitle(_translate("CoreUI", "Original Image"))
+        self.output_img_box.setTitle(_translate("CoreUI", "Output Image"))
 
-    def attachEvents(self):
+    def attach_events(self):
         ''' Attach signals to events '''
         self.start_button.clicked.connect(self.start)
         # self.stop_button.clicked.connect()
@@ -287,10 +287,10 @@ class RembotUI(QWidget):
 
         file_path = self.images_path + self.file_input.text() # specify filepath
         if  (os.path.exists(file_path) == True) and (file_path[-1] != '/'):
-            self.Log.warningLog("Loading File") # log
+            self.log.warningLog("Loading File") # log
             self.original_img.setPixmap(QPixmap( file_path )) # update display image
         else:
-            self.Log.warningLog("File does not exist") # log
+            self.log.warningLog("File does not exist") # log
         
 
     def updateStatus(self, msg):

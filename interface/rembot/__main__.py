@@ -9,7 +9,7 @@ License is available in LICENSE
 """
 
 from PyQt5.QtWidgets import QApplication
-from mainUi import MainUI
+from main_ui import MainUI
 
 
 if __name__ == '__main__':
