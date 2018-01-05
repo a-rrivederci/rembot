@@ -9,8 +9,8 @@ License is available in LICENSE
 """
 
 from PyQt5.QtWidgets import QApplication
-from main_ui import MainUI
 
+from main_ui import MainUI
 
 if __name__ == '__main__':
     import sys

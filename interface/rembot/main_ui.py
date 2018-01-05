@@ -8,9 +8,10 @@ License is available in LICENSE
 @since 2017-DEC-28
 """
 
-from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QMessageBox, QSizePolicy, QMenu, QAction
-from PyQt5.QtCore import Qt, QMetaObject, QCoreApplication
+from PyQt5.QtCore import QCoreApplication, QMetaObject, Qt
 from PyQt5.QtGui import QFont, QIcon, QPixmap
+from PyQt5.QtWidgets import (QAction, QDesktopWidget, QMainWindow, QMenu,
+                             QMessageBox, QSizePolicy)
 
 from core_ui import CoreUI
 

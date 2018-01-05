@@ -9,10 +9,12 @@ License is available in LICENSE
 """
 
 import os
-from PyQt5.QtWidgets import QWidget, QSizePolicy, QLayout, QVBoxLayout, QHBoxLayout, \
- QLabel, QGroupBox, QLineEdit, QGridLayout, QPushButton, QTextEdit, QSpacerItem
-from PyQt5.QtCore import Qt, pyqtSignal, QMetaObject, QCoreApplication, QSize
-from PyQt5.QtGui import QFont, QPixmap, QCursor
+
+from PyQt5.QtCore import QCoreApplication, QMetaObject, QSize, Qt, pyqtSignal
+from PyQt5.QtGui import QCursor, QFont, QPixmap
+from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QHBoxLayout, QLabel,
+                             QLayout, QLineEdit, QPushButton, QSizePolicy,
+                             QSpacerItem, QTextEdit, QVBoxLayout, QWidget)
 
 from system_status import Log
 

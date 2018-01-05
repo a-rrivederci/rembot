@@ -11,6 +11,7 @@ Tracking changes in the gui.
 - Hide log display
 - System status class
 - Displays input image
+- .vscode to gitignore
 
 ### Changed
 - Moved software into interface
