@@ -20,21 +20,21 @@ class MainUI(QMainWindow):
     def __init__(self):
         super().__init__()
         self.init_ui()
-        self.CoreUI.updateStatus("Initializing...") # status update
+        self.core_ui.update_status("Initializing...") # status update
 
-        self.log = self.CoreUI.log
-        self.log.infoLog("Initializing...") # log
-        self.log.infoLog("REMBOT v0.0.1") # log
+        self.log = self.core_ui.log
+        self.log.info_log("Initializing...") # log
+        self.log.info_log("REMBOT v0.0.1") # log
 
-        self.CoreUI.updateStatus("Ready") # status update
+        self.core_ui.update_status("Ready") # status update
 
     def init_ui(self):
         ''' Initiates application UI '''
         # Rembot ui class
-        self.CoreUI = CoreUI(self)
+        self.core_ui = CoreUI(self)
 
         # Set central widget at CoreUI
-        self.setCentralWidget(self.CoreUI)
+        self.setCentralWidget(self.core_ui)
 
         # MainUI
         self.setObjectName('MainUI')
@@ -43,7 +43,7 @@ class MainUI(QMainWindow):
         # Statusbar and Menubar
         # statusbar
         self.statusbar = self.statusBar()
-        self.CoreUI.status_message[str].connect(self.statusbar.showMessage)
+        self.core_ui.status_message[str].connect(self.statusbar.showMessage)
         # meunbar
         self.menubar = self.menuBar()
         self.rembot_menu = QMenu(self.menubar)
@@ -84,7 +84,8 @@ class MainUI(QMainWindow):
         self.setFont(font)
         # Set Icon
         icon = QIcon()
-        icon.addPixmap(QPixmap("interface/rembot/assets/images/icon.png"), QIcon.Normal, QIcon.Off)
+        icon_image = self.core_ui.images_path + "icon.png"
+        icon.addPixmap(QPixmap(icon_image), QIcon.Normal, QIcon.Off)
         self.setWindowIcon(icon)
         # MainUI Styles
         self.setLayoutDirection(Qt.LeftToRight)
@@ -119,10 +120,10 @@ class MainUI(QMainWindow):
         ''' Attach MainUI Ui events '''
         ## Menubar
         # self.action_about.triggered.connect()
-        self.action_log.toggled['bool'].connect(self.CoreUI.log_box.setVisible)
+        self.action_log.toggled['bool'].connect(self.core_ui.log_box.setVisible)
         #
         self.action_exit.triggered.connect(self.close)
-        self.CoreUI.quit_button.clicked.connect(self.close)
+        self.core_ui.quit_button.clicked.connect(self.close)
 
     def center(self):
         ''' Centers the window on the screen '''
@@ -132,13 +133,13 @@ class MainUI(QMainWindow):
 
     def closeEvent(self, event):
         ''' Close program dialog box '''
-        self.log.infoLog("Exit?") # log
+        self.log.info_log("Exit?") # log
         reply = QMessageBox.question(self, 'Exit ?', "Are you sure to quit?", \
         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
             event.accept()
-            self.log.infoLog("Goodbye!") # log
+            self.log.info_log("Goodbye!") # log
         else:
             event.ignore()
-            self.log.infoLog("Exit Aborted!") # log
+            self.log.info_log("Exit Aborted!") # log

@@ -9,18 +9,16 @@ License is available in LICENSE
 """
 
 import os
-import time
-from PyQt5.QtWidgets import ( QWidget, 
-    QSizePolicy, QLayout, 
-    QVBoxLayout, QHBoxLayout, QLabel, QGroupBox, QLineEdit, QGridLayout, 
-    QPushButton, QTextEdit, QSpacerItem )
-from PyQt5.QtCore import Qt, pyqtSignal, QThread, QMetaObject, QCoreApplication, QSize
+from PyQt5.QtWidgets import QWidget, QSizePolicy, QLayout, QVBoxLayout, QHBoxLayout, \
+ QLabel, QGroupBox, QLineEdit, QGridLayout, QPushButton, QTextEdit, QSpacerItem
+from PyQt5.QtCore import Qt, pyqtSignal, QMetaObject, QCoreApplication, QSize
 from PyQt5.QtGui import QFont, QPixmap, QCursor
 
 from system_status import Log
 
 
 class CoreUI(QWidget):
+    ''' Core Ui class '''
     status_message = pyqtSignal(str)
     images_path = "interface/rembot/assets/images/"
 
@@ -30,7 +28,7 @@ class CoreUI(QWidget):
 
         # Log class
         self.log = Log(self)
-        self.log.log_data[str].connect(self.toLog)
+        self.log.log_data[str].connect(self.to_log)
 
     def init_ui(self):
         ''' Rembot UI '''
@@ -74,7 +72,7 @@ class CoreUI(QWidget):
         self.version_number.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
         self.version_number.setObjectName("version_number")
         self.header_box.addWidget(self.version_number) # add version number to header
-        
+
         # Add to UI Container
         self.ui_container.addLayout(self.header_box) # add header box to layout
 
@@ -220,13 +218,14 @@ class CoreUI(QWidget):
         self.original_img = QLabel(self.original_img_box)
         self.original_img.setMinimumSize(QSize(720, 400))
         self.original_img.setText("")
-        self.original_img.setPixmap(QPixmap( self.images_path + "default.jpg"))
+        default = self.images_path + "default.jpg"
+        self.original_img.setPixmap(QPixmap(default))
         self.original_img.setScaledContents(True)
         self.original_img.setObjectName("original_img")
         #### Add Original image to Original image Layout
         self.original_img_layout.addWidget(self.original_img)
 
-        ### Add Original image box to Right box 
+        ### Add Original image box to Right box
         self.right_box.addWidget(self.original_img_box)
 
         #### Output image box
@@ -240,7 +239,7 @@ class CoreUI(QWidget):
         self.output_img = QLabel(self.output_img_box)
         self.output_img.setMinimumSize(QSize(720, 400))
         self.output_img.setText("")
-        self.output_img.setPixmap(QPixmap( self.images_path + "default.jpg"))
+        self.output_img.setPixmap(QPixmap(default))
         self.output_img.setScaledContents(True)
         self.output_img.setObjectName("output_img")
         #### Add Output img to output image layout
@@ -261,7 +260,7 @@ class CoreUI(QWidget):
 
         # Attach signals
         self.attach_events()
-        
+
     def retranslate_ui(self):
         ''' UI Text '''
         _translate = QCoreApplication.translate
@@ -281,22 +280,21 @@ class CoreUI(QWidget):
         ''' Attach signals to events '''
         self.start_button.clicked.connect(self.start)
         # self.stop_button.clicked.connect()
-        
+
     def start(self):
         ''' Start program '''
 
         file_path = self.images_path + self.file_input.text() # specify filepath
-        if  (os.path.exists(file_path) == True) and (file_path[-1] != '/'):
-            self.log.warningLog("Loading File") # log
-            self.original_img.setPixmap(QPixmap( file_path )) # update display image
+        if  os.path.exists(file_path) and file_path[-1] != '/':
+            self.log.info_log("Loading File") # log
+            self.original_img.setPixmap(QPixmap(file_path)) # update display image
         else:
-            self.log.warningLog("File does not exist") # log
-        
+            self.log.warning_log("File does not exist") # log
 
-    def updateStatus(self, msg):
+    def update_status(self, msg):
         ''' Update the program statusbar string and log '''
-        self.status_message.emit( str(msg) )
+        self.status_message.emit(msg)
 
-    def toLog(self, msg):
-        ''' '''
+    def to_log(self, msg):
+        ''' Output message in ui window '''
         self.log_output.append(msg)

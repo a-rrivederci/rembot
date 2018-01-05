@@ -14,7 +14,6 @@ from main_ui import MainUI
 
 if __name__ == '__main__':
     import sys
-    """ Run program """
-    app = QApplication(sys.argv)
-    main = MainUI()
-    sys.exit(app.exec_())
+    APP = QApplication(sys.argv)
+    MAIN = MainUI()
+    sys.exit(APP.exec_())
