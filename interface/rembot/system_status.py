@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
+Rembot system status reporting
 License is available in LICENSE
-@brief Rembot system status
 @author eeshiken
 @since 2017-JAN-01
 """

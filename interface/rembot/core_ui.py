@@ -2,22 +2,22 @@
 # -*- coding: utf-8 -*-
 
 """
+CoreUI methods
+
 License is available in LICENSE
-@brief CoreUI
 @author eeshiken
 @since 2017-DEC-28
 """
 
 import os
-
-from PyQt5.QtCore import QCoreApplication, QMetaObject, QSize, Qt, pyqtSignal
+from PyQt5.QtCore import QCoreApplication, QThread, QMetaObject, QSize, Qt, pyqtSignal
 from PyQt5.QtGui import QCursor, QFont, QPixmap
 from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QHBoxLayout, QLabel,
                              QLayout, QLineEdit, QPushButton, QSizePolicy,
-                             QSpacerItem, QTextEdit, QVBoxLayout, QWidget)
-
+                             QSpacerItem, QTextEdit, QVBoxLayout, QWidget, QMessageBox)
 from system_status import Log
 
+from abilities.paint_bot import PaintBot
 
 class CoreUI(QWidget):
     ''' Core Ui class '''
@@ -31,6 +31,11 @@ class CoreUI(QWidget):
         # Log class
         self.log = Log(self)
         self.log.log_data[str].connect(self.to_log)
+
+        # Abilities
+        self.process_thread = QThread()
+        self.paint = PaintBot()
+
 
     def init_ui(self):
         ''' Rembot UI '''
@@ -143,6 +148,7 @@ class CoreUI(QWidget):
         self.start_button.setObjectName("start_button")
         ##### Stop Button
         self.stop_button = QPushButton()
+        self.stop_button.setEnabled(False)
         size_policy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
@@ -150,14 +156,14 @@ class CoreUI(QWidget):
         self.stop_button.setSizePolicy(size_policy)
         self.stop_button.setObjectName("stop_button")
         ##### Test Button
-        self.test_button = QPushButton()
-        self.test_button.setEnabled(False)
+        self.abort_button = QPushButton()
+        self.abort_button.setEnabled(False)
         size_policy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
-        size_policy.setHeightForWidth(self.test_button.sizePolicy().hasHeightForWidth())
-        self.test_button.setSizePolicy(size_policy)
-        self.test_button.setObjectName("test_button")
+        size_policy.setHeightForWidth(self.abort_button.sizePolicy().hasHeightForWidth())
+        self.abort_button.setSizePolicy(size_policy)
+        self.abort_button.setObjectName("abort_button")
         ##### Quit Button
         self.quit_button = QPushButton()
         size_policy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
@@ -169,7 +175,7 @@ class CoreUI(QWidget):
         #### Add Buttons to Button Box
         self.button_box.addWidget(self.start_button, 0, 0, 1, 1)
         self.button_box.addWidget(self.stop_button, 0, 1, 1, 1)
-        self.button_box.addWidget(self.test_button, 1, 0, 1, 1)
+        self.button_box.addWidget(self.abort_button, 1, 0, 1, 1)
         self.button_box.addWidget(self.quit_button, 1, 1, 1, 1)
 
         ### Add Button box to Left box
@@ -257,6 +263,7 @@ class CoreUI(QWidget):
         self.ui_container.addLayout(self.content_box) # add content box to layout
 
         # Labelling
+        self._translate = QCoreApplication.translate
         self.retranslate_ui()
         QMetaObject.connectSlotsByName(self)
 
@@ -265,33 +272,63 @@ class CoreUI(QWidget):
 
     def retranslate_ui(self):
         ''' UI Text '''
-        _translate = QCoreApplication.translate
-        self.header_title.setText(_translate("CoreUI", "REMBOT"))
-        self.version_number.setText(_translate("CoreUI", ""))
-        self.file_label.setText(_translate("CoreUI", "File name"))
-        self.file_input.setPlaceholderText(_translate("CoreUI", "image.ext"))
-        self.start_button.setText(_translate("CoreUI", "START"))
-        self.stop_button.setText(_translate("CoreUI", "STOP"))
-        self.test_button.setText(_translate("CoreUI", "TEST"))
-        self.quit_button.setText(_translate("CoreUI", "QUIT"))
-        self.log_box.setTitle(_translate("CoreUI", "Log"))
-        self.original_img_box.setTitle(_translate("CoreUI", "Original Image"))
-        self.output_img_box.setTitle(_translate("CoreUI", "Output Image"))
+        self.header_title.setText(self._translate("CoreUI", "REMBOT"))
+        self.version_number.setText(self._translate("CoreUI", ""))
+        self.file_label.setText(self._translate("CoreUI", "File name"))
+        self.file_input.setPlaceholderText(self._translate("CoreUI", "image.ext"))
+        self.start_button.setText(self._translate("CoreUI", "START"))
+        self.stop_button.setText(self._translate("CoreUI", "STOP"))
+        self.abort_button.setText(self._translate("CoreUI", "ABORT"))
+        self.quit_button.setText(self._translate("CoreUI", "QUIT"))
+        self.log_box.setTitle(self._translate("CoreUI", "Log"))
+        self.original_img_box.setTitle(self._translate("CoreUI", "Original Image"))
+        self.output_img_box.setTitle(self._translate("CoreUI", "Output Image"))
 
     def attach_events(self):
         ''' Attach signals to events '''
         self.start_button.clicked.connect(self.start)
-        # self.stop_button.clicked.connect()
+        self.stop_button.clicked.connect(self.stop)
 
     def start(self):
         ''' Start program '''
-
         file_path = self.images_path + self.file_input.text() # specify filepath
         if  os.path.exists(file_path) and file_path[-1] != '/':
             self.log.info_log("Loading File") # log
             self.original_img.setPixmap(QPixmap(file_path)) # update display image
+
+            reply = QMessageBox.question(self, 'Continue ?', "Contine to process ?", \
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
+            if reply == QMessageBox.Yes:
+                self.stop_button.setEnabled(False) # disable stop button
+                self.start_button.setEnabled(False) # disable start button
+
+                # Run process
+                
+                self.paint.moveToThread(self.process_thread)
+                self.paint.message[str].connect(self.log.info_log)
+                self.paint.finished.connect(self.process_thread.quit)
+                self.process_thread.started.connect(self.paint.run_process)
+                self.process_thread.finished.connect(self.process_done)
+                self.process_thread.start()
+
         else:
             self.log.warning_log("File does not exist") # log
+
+    def process_done(self):
+        ''' Reset ui when a process is done '''
+        self.stop_button.setEnabled(False) # disable Stop
+        self.abort_button.setEnabled(False) # disable abort
+        # Set start button to original content and function
+        self.start_button.setText(self._translate("CoreUI", "START"))
+        self.start_button.clicked.connect(self.start)
+        self.start_button.setEnabled(True) # enable start
+
+        self.log.warning_log("Process done!") # log
+
+    def stop(self):
+        ''' Stop Any running process '''
+        return
 
     def update_status(self, msg):
         ''' Update the program statusbar string and log '''

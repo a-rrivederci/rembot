@@ -1,62 +1,76 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
+import sys
+import time
 
-import time, sys
-from PyQt5.QtCore import pyqtSignal, QThread
-from PyQt5.QtWidgets import (
-    QApplication, QPushButton, QTextEdit, QWidget, QVBoxLayout
-    )
+from PyQt5.QtCore import (QCoreApplication, QObject, QRunnable, QThread,
+                          QThreadPool, pyqtSignal)
 
-class Thread(QThread):
-    log = pyqtSignal(str)
 
-    def __init__(self, parent=None):
-        super(Thread, self).__init__(parent)
-        self._items = []
-
-    def setItems(self, items):
-        if not self.isRunning():
-            self._items[:] = items
+# Subclassing QThread
+# http://qt-project.org/doc/latest/qthread.html
+class AThread(QThread):
 
     def run(self):
-        for item in self._items:
+        count = 0
+        while count < 5:
             time.sleep(1)
-            self.log.emit('processing: %s' % item)
+            print("A Increasing")
+            count += 1
 
-class Widget(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.ui()
-        self._worker = Thread(self)
-        self._worker.log.connect(self.toLog)
-        #self._worker.started.connect(lambda: self.toLog('start'))
-        #self._worker.finished.connect(lambda: self.toLog('finished'))
+# Subclassing QObject and using moveToThread
+# http://blog.qt.digia.com/blog/2007/07/05/qthreads-no-longer-abstract
+class SomeObject(QObject):
 
-    def process(self):
-        items = ['Image%02d.png' % i for i in range(10)]
-        self._worker.setItems(items)
-        self._worker.start()
+    finished = pyqtSignal()
 
-    def ui(self):
-        self.LogOutputTxt = QTextEdit()
-        self.LogOutputTxt.setReadOnly(True)
-        startBtn = QPushButton('Start')
-        startBtn.clicked.connect(self.start)
-        layout = QVBoxLayout()
-        layout.addWidget(self.LogOutputTxt)
-        layout.addWidget(startBtn)
-        self.setLayout(layout)
-        self.resize(400, 300)
-        self.show()
+    def long_running(self):
+        count = 0
+        while count < 5:
+            time.sleep(1)
+            print("B Increasing")
+            count += 1
+        self.finished.emit()
 
-    def start(self):
-        if not self._worker.isRunning():
-            self.process()
+# Using a QRunnable
+# http://qt-project.org/doc/latest/qthreadpool.html
+# Note that a QRunnable isn't a subclass of QObject and therefore does
+# not provide signals and slots.
+class Runnable(QRunnable):
 
-    def toLog(self, txt):
-        self.LogOutputTxt.append(txt)
+    def run(self):
+        count = 0
+        app = QCoreApplication.instance()
+        while count < 5:
+            print("C Increasing")
+            time.sleep(1)
+            count += 1
+        app.quit()
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ui = Widget()
+
+def using_q_thread():
+    app = QCoreApplication([])
+    thread = AThread()
+    thread.finished.connect(app.exit)
+    thread.start()
     sys.exit(app.exec_())
+
+def using_move_to_thread():
+    app = QCoreApplication([])
+    objThread = QThread()
+    obj = SomeObject()
+    obj.moveToThread(objThread)
+    obj.finished.connect(objThread.quit)
+    objThread.started.connect(obj.long_running)
+    objThread.finished.connect(app.exit)
+    objThread.start()
+    sys.exit(app.exec_())
+
+def using_q_runnable():
+    app = QCoreApplication([])
+    runnable = Runnable()
+    QThreadPool.globalInstance().start(runnable)
+    sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    #using_q_thread()
+    using_move_to_thread()
+    #using_q_runnable()
