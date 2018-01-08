@@ -12,12 +12,13 @@ Tracking changes in the gui.
 - System status class
 - Displays input image
 - .vscode to gitignore
+- Mulitple ability support
 
 ### Changed
 - Moved software into interface
 - renamed software folder to interface_0.0.1
 - Lint fixes
-
+- Package layout
 
 &nbsp;
 ## 0.0.1 - 2017-NOV-17
