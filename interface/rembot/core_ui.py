@@ -15,9 +15,10 @@ from PyQt5.QtGui import QCursor, QFont, QPixmap
 from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QHBoxLayout, QLabel,
                              QLayout, QLineEdit, QPushButton, QSizePolicy,
                              QSpacerItem, QTextEdit, QVBoxLayout, QWidget, QMessageBox)
-from system_status import Log
 
-from abilities.paint_bot import PaintBot
+from system_status import Log
+from paint_bot import PaintBot
+
 
 class CoreUI(QWidget):
     ''' Core Ui class '''
@@ -29,13 +30,12 @@ class CoreUI(QWidget):
         self.init_ui()
 
         # Log class
-        self.log = Log(self)
+        self.log = Log(self, __name__)
         self.log.log_data[str].connect(self.to_log)
 
         # Abilities
         self.process_thread = QThread()
         self.paint = PaintBot()
-
 
     def init_ui(self):
         ''' Rembot UI '''
@@ -291,6 +291,10 @@ class CoreUI(QWidget):
 
     def start(self):
         ''' Start program '''
+        self.painter()
+
+    def painter(self):
+        ''' Start painter program '''
         file_path = self.images_path + self.file_input.text() # specify filepath
         if  os.path.exists(file_path) and file_path[-1] != '/':
             self.log.info_log("Loading File") # log
@@ -300,18 +304,18 @@ class CoreUI(QWidget):
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
             if reply == QMessageBox.Yes:
-                self.stop_button.setEnabled(False) # disable stop button
+                self.stop_button.setEnabled(True) # enable stop button
                 self.start_button.setEnabled(False) # disable start button
 
                 # Run process
-                
                 self.paint.moveToThread(self.process_thread)
-                self.paint.message[str].connect(self.log.info_log)
+                self.paint.message[str].connect(self.paint.log.info_log) # paintbot logger
+                self.paint.log.log_data[str].connect(self.to_log) # display ability logger in ui
                 self.paint.finished.connect(self.process_thread.quit)
                 self.process_thread.started.connect(self.paint.run_process)
                 self.process_thread.finished.connect(self.process_done)
                 self.process_thread.start()
-
+                self.update_status("Running ...")
         else:
             self.log.warning_log("File does not exist") # log
 
@@ -323,11 +327,12 @@ class CoreUI(QWidget):
         self.start_button.setText(self._translate("CoreUI", "START"))
         self.start_button.clicked.connect(self.start)
         self.start_button.setEnabled(True) # enable start
-
         self.log.warning_log("Process done!") # log
+        self.update_status("Ready")
 
     def stop(self):
         ''' Stop Any running process '''
+        self.process_thread.quit()
         return
 
     def update_status(self, msg):

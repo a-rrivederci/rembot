@@ -12,6 +12,8 @@ License is available in LICENSE
 import time
 from PyQt5.QtCore import QObject, pyqtSignal
 
+from system_status import Log
+
 
 class PaintBot(QObject):
     ''' Processing and painting an image '''
@@ -19,9 +21,12 @@ class PaintBot(QObject):
     finished = pyqtSignal()
     start_time = 0
 
+    def __init__(self):
+        super().__init__()
+        self.log = Log(self, __name__)
+
     def run_process(self):
         ''' start paint bot process '''
-
         for i in range(10):
             self.message.emit('Process %s'%i)
             time.sleep(1)

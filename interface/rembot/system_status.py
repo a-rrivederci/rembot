@@ -17,20 +17,19 @@ class Log(QObject):
     ''' Logging class '''
     log_data = pyqtSignal(str)
 
-    def __init__(self, parent):
+    root_logger = logging.getLogger("rembot")
+    root_logger.setLevel(level=logging.INFO)
+    logger_io = io.StringIO()
+    log_handler = logging.StreamHandler(logger_io)
+    log_formatter = logging.Formatter(
+        fmt='%(asctime)s [%(name)s](%(levelname)s) %(message)s',
+        datefmt='%H:%M:%S')
+    log_handler.setFormatter(log_formatter)
+    root_logger.addHandler(log_handler)
+
+    def __init__(self, parent, module):
         super().__init__(parent)
-
-        root_logger = logging.getLogger("rembot")
-        root_logger.setLevel(level=logging.INFO)
-        self.logger_io = io.StringIO()
-        log_handler = logging.StreamHandler(self.logger_io)
-        log_formatter = logging.Formatter(
-            fmt='%(asctime)s [%(name)s](%(levelname)s) %(message)s',
-            datefmt='%H:%M:%S')
-        log_handler.setFormatter(log_formatter)
-        root_logger.addHandler(log_handler)
-
-        self.logger = logging.getLogger("rembot.ui")
+        self.logger = logging.getLogger("rembot." + module)
 
     def update_log(self):
         ''' Update the program log data '''

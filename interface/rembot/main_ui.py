@@ -13,6 +13,7 @@ from PyQt5.QtGui import QFont, QIcon, QPixmap
 from PyQt5.QtWidgets import (QAction, QDesktopWidget, QMainWindow, QMenu,
                              QMessageBox, QSizePolicy)
 from core_ui import CoreUI
+from system_status import Log
 
 
 class MainUI(QMainWindow):
@@ -22,7 +23,10 @@ class MainUI(QMainWindow):
         self.init_ui()
         self.core_ui.update_status("Initializing...") # status update
 
-        self.log = self.core_ui.log
+        # Log class
+        self.log = Log(self, __name__)
+        self.log.log_data[str].connect(self.core_ui.to_log)
+
         self.log.info_log("Initializing...") # log
         self.log.info_log("REMBOT v0.0.1") # log
 

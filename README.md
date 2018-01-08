@@ -23,7 +23,6 @@
     # run program
     python -m main
 ```
-![alt Original Image](interface/interface_0.0.1/images/printer-evaluation.jpg "Original") ![alt Post Processing](interface/interface_0.0.1/images/printer_eval.png "Post Processing")
 
 # Contact
 * [Technovus  Admin](mailto:technovus.sfu@gmail.com)
