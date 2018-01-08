@@ -24,8 +24,8 @@ class MainUI(QMainWindow):
         self.core_ui.update_status("Initializing...") # status update
 
         # Log class
-        self.log = Log(self, __name__)
-        self.log.log_data[str].connect(self.core_ui.to_log)
+        self.log = Log(self) # sterr log
+        self.log.log_data[str].connect(self.core_ui.to_log) # ui log
 
         self.log.info_log("Initializing...") # log
         self.log.info_log("REMBOT v0.0.1") # log

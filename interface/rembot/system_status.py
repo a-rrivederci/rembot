@@ -12,7 +12,6 @@ import io
 import logging
 from PyQt5.QtCore import pyqtSignal, QObject
 
-
 class Log(QObject):
     ''' Logging class '''
     log_data = pyqtSignal(str)
@@ -27,9 +26,9 @@ class Log(QObject):
     log_handler.setFormatter(log_formatter)
     root_logger.addHandler(log_handler)
 
-    def __init__(self, parent, module):
+    def __init__(self, parent):
         super().__init__(parent)
-        self.logger = logging.getLogger("rembot." + module)
+        self.logger = logging.getLogger("rembot." + parent.__class__.__name__)\
 
     def update_log(self):
         ''' Update the program log data '''

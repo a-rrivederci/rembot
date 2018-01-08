@@ -17,7 +17,7 @@ from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QHBoxLayout, QLabel,
                              QSpacerItem, QTextEdit, QVBoxLayout, QWidget, QMessageBox)
 
 from system_status import Log
-from paint_bot import PaintBot
+from abilities import PaintBot, DrawBot
 
 
 class CoreUI(QWidget):
@@ -30,12 +30,29 @@ class CoreUI(QWidget):
         self.init_ui()
 
         # Log class
-        self.log = Log(self, __name__)
+        self.log = Log(self) 
         self.log.log_data[str].connect(self.to_log)
 
         # Abilities
-        self.process_thread = QThread()
-        self.paint = PaintBot()
+        self.paint_thread = QThread()
+        self.draw_thread = QThread()
+        # PaintBot
+        self.paint_ability = PaintBot()
+        self.paint_ability.moveToThread(self.paint_thread)
+        self.paint_ability.message[str].connect(self.paint_ability.log.info_log) # paint stderr log
+        self.paint_ability.log.log_data[str].connect(self.to_log) # display ability logger in ui
+        self.paint_ability.finished.connect(self.paint_thread.quit)
+        self.paint_thread.started.connect(self.paint_ability.run_process)
+        self.paint_thread.finished.connect(self.process_done)
+
+        # DrawBot
+        self.draw_ability = DrawBot()
+        self.draw_ability.moveToThread(self.draw_thread)
+        self.draw_ability.message[str].connect(self.draw_ability.log.info_log) # paint stderr log
+        self.draw_ability.log.log_data[str].connect(self.to_log) # display ability logger in ui
+        self.draw_ability.finished.connect(self.draw_thread.quit)
+        self.draw_thread.started.connect(self.draw_ability.run_process)
+        self.draw_thread.finished.connect(self.process_done)
 
     def init_ui(self):
         ''' Rembot UI '''
@@ -289,9 +306,32 @@ class CoreUI(QWidget):
         self.start_button.clicked.connect(self.start)
         self.stop_button.clicked.connect(self.stop)
 
+    def update_status(self, msg):
+        ''' Update the program statusbar string and log '''
+        self.status_message.emit(msg)
+
+    def to_log(self, msg):
+        ''' Output message in ui window '''
+        self.log_output.append(msg)
+
+    # Abilities
     def start(self):
         ''' Start program '''
-        self.painter()
+        self.draw()
+
+    def stop(self):
+        ''' Stop Any running process '''
+        self.paint_thread.stop()
+        self.draw_thread.stop()
+
+    def process_done(self):
+        ''' Reset ui when a process is done '''
+        self.stop_button.setEnabled(False) # disable Stop
+        self.abort_button.setEnabled(False) # disable abort
+        self.start_button.setEnabled(True) # enable start
+
+        self.log.info_log("Process done!") # log
+        self.update_status("Ready")
 
     def painter(self):
         ''' Start painter program '''
@@ -300,7 +340,7 @@ class CoreUI(QWidget):
             self.log.info_log("Loading File") # log
             self.original_img.setPixmap(QPixmap(file_path)) # update display image
 
-            reply = QMessageBox.question(self, 'Continue ?', "Contine to process ?", \
+            reply = QMessageBox.question(self, 'Run paint program ?', "Contine to process ?", \
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
             if reply == QMessageBox.Yes:
@@ -308,37 +348,24 @@ class CoreUI(QWidget):
                 self.start_button.setEnabled(False) # disable start button
 
                 # Run process
-                self.paint.moveToThread(self.process_thread)
-                self.paint.message[str].connect(self.paint.log.info_log) # paintbot logger
-                self.paint.log.log_data[str].connect(self.to_log) # display ability logger in ui
-                self.paint.finished.connect(self.process_thread.quit)
-                self.process_thread.started.connect(self.paint.run_process)
-                self.process_thread.finished.connect(self.process_done)
-                self.process_thread.start()
+                self.paint_thread.start()
                 self.update_status("Running ...")
+            else:
+                self.log.info_log("Aborting.") # log
         else:
             self.log.warning_log("File does not exist") # log
 
-    def process_done(self):
-        ''' Reset ui when a process is done '''
-        self.stop_button.setEnabled(False) # disable Stop
-        self.abort_button.setEnabled(False) # disable abort
-        # Set start button to original content and function
-        self.start_button.setText(self._translate("CoreUI", "START"))
-        self.start_button.clicked.connect(self.start)
-        self.start_button.setEnabled(True) # enable start
-        self.log.warning_log("Process done!") # log
-        self.update_status("Ready")
+    def draw(self):
+        ''' Start draw program '''
+        reply = QMessageBox.question(self, 'Run draw program ?', "Contine to process ?", \
+        QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
-    def stop(self):
-        ''' Stop Any running process '''
-        self.process_thread.quit()
-        return
+        if reply == QMessageBox.Yes:
+            self.stop_button.setEnabled(True) # enable stop button
+            self.start_button.setEnabled(False) # disable start button
 
-    def update_status(self, msg):
-        ''' Update the program statusbar string and log '''
-        self.status_message.emit(msg)
-
-    def to_log(self, msg):
-        ''' Output message in ui window '''
-        self.log_output.append(msg)
+            # Run process
+            self.draw_thread.start()
+            self.update_status("Running ...")
+        else:
+            self.log.info_log("Aborting.") # log
