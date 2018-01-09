@@ -13,6 +13,7 @@ Tracking changes in the gui.
 - Displays input image
 - .vscode to gitignore
 - Mulitple ability support
+- Added about dialog
 
 ### Changed
 - Moved software into interface
