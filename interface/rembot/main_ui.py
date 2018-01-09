@@ -127,7 +127,7 @@ class MainUI(QMainWindow):
         self.action_about.triggered.connect(self.open_window)
         self.action_log.toggled['bool'].connect(self.core_ui.log_box.setVisible)
         self.action_exit.triggered.connect(self.close)
-        # Button
+        ## Buttons
         self.core_ui.quit_button.clicked.connect(self.close)
 
     def center(self):
