@@ -183,10 +183,10 @@ class Image:
     def generate_cmds(self):
         # generate gcode
         print("Generating GCode ...")
-        i=1
+        i = 1
         numColors = 8
-        self.cmds = np.array( [], dtype=[('x', 'i4'), ('y', 'i4')] )
-        buff = np.array( [(-1, -1)], dtype=[('x', 'i4'), ('y', 'i4')] )
+        self.cmds = np.array([], dtype=[('x', 'i4'), ('y', 'i4')])
+        buff = np.array([(-1, -1)], dtype=[('x', 'i4'), ('y', 'i4')])
 
         for color in range(numColors):
             for row_painting in range(self.avg_nib_y):
