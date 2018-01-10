@@ -27,10 +27,8 @@ class CoreUI(QWidget):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.init_ui()
-
         # Log class
-        self.log = Log(self) 
+        self.log = Log(self)
         self.log.log_data[str].connect(self.to_log)
 
         # Abilities
@@ -53,6 +51,8 @@ class CoreUI(QWidget):
         self.draw_ability.finished.connect(self.draw_thread.quit)
         self.draw_thread.started.connect(self.draw_ability.run_process)
         self.draw_thread.finished.connect(self.process_done)
+
+        self.init_ui()
 
     def init_ui(self):
         ''' Rembot UI '''
@@ -317,12 +317,11 @@ class CoreUI(QWidget):
     # Abilities
     def start(self):
         ''' Start program '''
-        self.draw()
+        self.painter()
 
     def stop(self):
         ''' Stop Any running process '''
-        self.paint_thread.stop()
-        self.draw_thread.stop()
+        self.paint_thread.terminate()
 
     def process_done(self):
         ''' Reset ui when a process is done '''
@@ -344,7 +343,7 @@ class CoreUI(QWidget):
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
             if reply == QMessageBox.Yes:
-                self.stop_button.setEnabled(True) # enable stop button
+                self.stop_button.setEnabled(False) # enable stop button
                 self.start_button.setEnabled(False) # disable start button
 
                 # Run process
