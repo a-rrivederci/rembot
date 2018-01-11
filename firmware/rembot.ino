@@ -1,4 +1,9 @@
-// This code runs the three stepper motors, and the servo
+/**
+  Runs the three stepper motors, and the servo
+  License is available in LICENSE
+  @author catilin refayet eeshiken
+  @since 22-DEC-2017
+**/
 
 #include <AccelStepper.h>
 #include <Wire.h>
@@ -37,31 +42,31 @@ Adafruit_StepperMotor *myStepper1 = AFMSbot.getStepper(200, 1);
 
 // you can change these to DOUBLE or INTERLEAVE or MICROSTEP!
 // wrappers for the first motor!
-void forwardstep1() {  
+void forwardstep1() {
   myStepper1->onestep(FORWARD, DOUBLE);
   return;
 }
-void backwardstep1() {  
+void backwardstep1() {
   myStepper1->onestep(BACKWARD, DOUBLE);
   return;
 }
 
 // wrappers for the second motor!
-void forwardstep2() {  
+void forwardstep2() {
   myStepper2->onestep(FORWARD, DOUBLE);
   return;
 }
-void backwardstep2() {  
+void backwardstep2() {
   myStepper2->onestep(BACKWARD, DOUBLE);
   return;
 }
 
 // wrappers for the third motor!
-void forwardstep3() {  
+void forwardstep3() {
   myStepper3->onestep(FORWARD, DOUBLE);
   return;
 }
-void backwardstep3() {  
+void backwardstep3() {
   myStepper3->onestep(BACKWARD, DOUBLE);
   return;
 }
@@ -72,12 +77,12 @@ AccelStepper stepper2(forwardstep2, backwardstep2);
 AccelStepper stepper3(forwardstep3, backwardstep3);
 
 void setup()
-{  
+{
   Serial.begin(BAUD_RATE);
-  
+
   AFMSbot.begin(); // Start the bottom shield
   AFMStop.begin(); // Start the top shield
-  
+
   servo1.attach(SERVO_PIN);
   claw_servo.attach(CLAW_PIN);
 }
@@ -93,25 +98,25 @@ bool flag = true;
       stepper1.run();
       flag = true;
     }
-      
+
     if (stepper2.distanceToGo() != 0)
     {
       stepper2.run();
       flag = true;
     }
-      
+
     if (stepper3.distanceToGo() != 0)
     {
       stepper3.run();
       flag = true;
     }
-      
-  }    
+
+  }
   return;
 }
 
 // Motor 3 should be the y direction
-// Inputs: initial and final x coordinate, initial and final y coordinate // dir = 0 = CW //dir = 1 = ACW   
+// Inputs: initial and final x coordinate, initial and final y coordinate // dir = 0 = CW //dir = 1 = ACW
 void move_steppers(int pos_x1,int pos_x2,int pos_y1, int pos_y2,int dirX,int dirY, int custom_speed)
 {
   int mult = 1;
@@ -120,51 +125,51 @@ void move_steppers(int pos_x1,int pos_x2,int pos_y1, int pos_y2,int dirX,int dir
 
   if (dirX = 1)
   {
-  
+
   stepper1.setMaxSpeed(custom_speed);
   stepper1.setAcceleration(X_ACCEL);
-  stepper1.moveTo(-stepper1.currentPosition()-deg_x);  
+  stepper1.moveTo(-stepper1.currentPosition()-deg_x);
 
   stepper2.setMaxSpeed(custom_speed);
   stepper2.setAcceleration(X_ACCEL);
   stepper2.moveTo(-stepper2.currentPosition()-deg_x);
-  
+
   }
 
   if (dirX = 0)
   {
-  
+
   stepper1.setMaxSpeed(custom_speed);
   stepper1.setAcceleration(X_ACCEL);
-  stepper1.moveTo(-stepper1.currentPosition()- deg_x);  
+  stepper1.moveTo(-stepper1.currentPosition()- deg_x);
 
   stepper2.setMaxSpeed(custom_speed);
   stepper2.setAcceleration(X_ACCEL);
   stepper2.moveTo(-stepper2.currentPosition()-deg_x);
-  
+
   }
 
-    
+
   if (dirY = 1)
   {
-  
+
   stepper3.setMaxSpeed(custom_speed);
   stepper3.setAcceleration(Y_ACCEL);
   stepper3.moveTo(-stepper3.currentPosition()-deg_y);
-    
+
   }
 
   if (dirY = 0)
   {
-  
+
   stepper3.setMaxSpeed(custom_speed);
   stepper3.setAcceleration(Y_ACCEL);
   stepper3.moveTo(-stepper3.currentPosition()-deg_y);
-  
- 
+
+
   }
-    
-  
+
+
 
   return;
 }
@@ -175,7 +180,7 @@ void reset()
   stepper1.setMaxSpeed(MAX_SPEED);
   stepper1.setAcceleration(X_ACCEL);
   stepper1.moveTo(-stepper1.currentPosition()-10);
-    
+
   stepper2.setMaxSpeed(MAX_SPEED);
   stepper2.setAcceleration(X_ACCEL);
   stepper2.moveTo(-stepper2.currentPosition()-10);
@@ -200,13 +205,13 @@ void reset()
       stepper2.run();
       flag = true;
     }
-      
+
     if ((stepper3.distanceToGo() != 0) and (digitalRead(INTERRUPT_PIN3)!=true))
     {
       stepper3.run();
       flag = true;
     }
-  }    
+  }
   return;
 }
 
@@ -217,10 +222,10 @@ void loop()
   // Move from initial coordinate of (0,0) to a coordinate of (360,360)
    move_steppers(0,100,0,300,1,1,MAX_SPEED);
    move_steppers(0,-500,0,300,1,0,MAX_SPEED);
-   
+
    run_motors();
    Serial.println("Run Completed");
-   
+
    delay(500);
    Serial.println("Running other way");
 
@@ -247,7 +252,7 @@ void loop()
 
 
 /*
- * 
+ *
 
 // Input: degrees to raise the arm
 void raise_arm(int deg)
