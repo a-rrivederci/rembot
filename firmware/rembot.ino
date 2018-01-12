@@ -12,7 +12,7 @@
 #include <Servo.h>
 
 #define SERVO_PIN 5
-#define CLAW_PIN 9
+#define PEN_PIN 9
 #define INTERRUPT_PIN1 1
 #define INTERRUPT_PIN2 2
 #define INTERRUPT_PIN3 3
@@ -84,7 +84,7 @@ void setup()
   AFMStop.begin(); // Start the top shield
 
   servo1.attach(SERVO_PIN);
-  claw_servo.attach(CLAW_PIN);
+  claw_servo.attach(PEN_PIN);
 }
 
 void run_motors()
