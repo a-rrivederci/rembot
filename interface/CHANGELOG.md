@@ -3,7 +3,6 @@ Tracking changes in the gui.
 
 ## [Unreleased] - YYYY-MMM-DD
 ### Added
-- Changelog
 - Rembot python package
 - Logging
 - Widget subclass in the main event class
@@ -13,13 +12,16 @@ Tracking changes in the gui.
 - Displays input image
 - .vscode to gitignore
 - Mulitple ability support
-- Added about dialog
+- `About` dialog
+- Serial testing template
+- Added pyserial to requirements
 
 ### Changed
 - Moved software into interface
 - renamed software folder to interface_0.0.1
 - Lint fixes
 - Package layout
+- Moved interface files into test
 
 &nbsp;
 ## 0.0.1 - 2017-NOV-17
