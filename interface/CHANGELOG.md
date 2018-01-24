@@ -15,6 +15,7 @@ Tracking changes in the gui.
 - `About` dialog
 - Serial testing template
 - Added pyserial to requirements
+- Established communication protocol with arduino
 
 ### Changed
 - Moved software into interface

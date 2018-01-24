@@ -35,7 +35,7 @@ while True:
     # PY_LOGGER.info(counter
     DATA = ser.readline()
     if DATA != b'Ready\r\n':
-        out = ord(DATA.decode().rstrip())
+        
     else:
         out = DATA.decode().rstrip()
 

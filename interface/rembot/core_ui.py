@@ -17,7 +17,7 @@ from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QHBoxLayout, QLabel,
                              QSpacerItem, QTextEdit, QVBoxLayout, QWidget, QMessageBox)
 
 from system_status import Log
-from abilities import PaintBot, DrawBot
+from abilities import PaintBot
 
 
 class CoreUI(QWidget):
@@ -33,7 +33,6 @@ class CoreUI(QWidget):
 
         # Abilities
         self.paint_thread = QThread()
-        self.draw_thread = QThread()
         # PaintBot
         self.paint_ability = PaintBot()
         self.paint_ability.moveToThread(self.paint_thread)
@@ -42,15 +41,6 @@ class CoreUI(QWidget):
         self.paint_ability.finished.connect(self.paint_thread.quit)
         self.paint_thread.started.connect(self.paint_ability.run_process)
         self.paint_thread.finished.connect(self.process_done)
-
-        # DrawBot
-        self.draw_ability = DrawBot()
-        self.draw_ability.moveToThread(self.draw_thread)
-        self.draw_ability.message[str].connect(self.draw_ability.log.info_log) # paint stderr log
-        self.draw_ability.log.log_data[str].connect(self.to_log) # display ability logger in ui
-        self.draw_ability.finished.connect(self.draw_thread.quit)
-        self.draw_thread.started.connect(self.draw_ability.run_process)
-        self.draw_thread.finished.connect(self.process_done)
 
         self.init_ui()
 
@@ -353,18 +343,3 @@ class CoreUI(QWidget):
                 self.log.info_log("Aborting.") # log
         else:
             self.log.warning_log("File does not exist") # log
-
-    def draw(self):
-        ''' Start draw program '''
-        reply = QMessageBox.question(self, 'Run draw program ?', "Contine to process ?", \
-        QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-
-        if reply == QMessageBox.Yes:
-            self.stop_button.setEnabled(True) # enable stop button
-            self.start_button.setEnabled(False) # disable start button
-
-            # Run process
-            self.draw_thread.start()
-            self.update_status("Running ...")
-        else:
-            self.log.info_log("Aborting.") # log

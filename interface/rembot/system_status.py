@@ -32,14 +32,15 @@ class Log(QObject):
 
     def update_log(self):
         ''' Update the program log data '''
-        log = '' # initialize empty log string
         buffer = self.logger_io.getvalue() # get logger stream
-        for i in buffer:  # Remove empty lines
-            if i != '\n':
-                log += i
+        log = buffer.rstrip() # remove newline
+        if log[-13:] == "Process done!":
+            log += '\n'
+
         self.logger_io.truncate(0)
         self.logger_io.seek(0)
-        print(log) # stdout
+
+        print(log) #stdout
         return log
 
     def info_log(self, msg):
