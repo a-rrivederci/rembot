@@ -1,7 +1,7 @@
 // Runs the three stepper motors, and the servo
 // License is available in LICENSE
 // @author eeshiken
-// @since 22-DEC-2017
+// @since 27-JAN-2018
 // @version 2.0.0
 
 // Imports
@@ -21,7 +21,7 @@
 #define FINE_SPEED 1000
 #define MAX_SPEED 1000
 #define ARM_TURN_TIME 80
-#define CLAW_TURN_TIME 130
+#define CLAW_TURN_TIME 140
 // Hardware defines
 #define BAUD_RATE 9600
 #define ARM_PIN 10
@@ -45,6 +45,7 @@ byte CLAW_IS_OPEN = 0; // false;
 double X_ACCEL = 100.0;
 double Y_ACCEL = 100.0;
 char cmd;
+int step;
 
 // Adafruit MotorShield AFMS bottom - 0 and AFSM top - 1
 Adafruit_MotorShield AFMS0(0x60); // Default address, no jumpers
@@ -124,41 +125,151 @@ void setup() {
 }
 
 void loop() {
-    // // Change direction at the limits
-    // if (lv_stepper.distanceToGo() == 0)
-    //     lv_stepper.moveTo(-lv_stepper.currentPosition());
-    // if (rv_stepper.distanceToGo() == 0)
-    //     rv_stepper.moveTo(-rv_stepper.currentPosition());
-    // lv_stepper.run();
-    // rv_stepper.run();
+}
 
-    // Test claw and arm
-    if (Serial.available()) {
-        switch(Serial.read()) {
-            case 'W': // raise arm
-                arm_raise();
-                break;
-            case 'S': // lower arm
-                arm_lower();
-                break;
-            case 'A': // open claw
-                claw_open();
-                break;
-            case 'D': // close claw
-                claw_close();
-                break;
-            default:
-                Serial.println("Not Recognized");
-        }
+void serialEvent() {
+    switch(Serial.read()) {
+        case 'U': // go up
+            go_up();
+            break;
+        case 'J': // go down
+            go_down();
+            break;
+        case 'H': // go left
+            go_left();
+            break;
+        case 'K': // go right
+            go_right();
+            break;
+        case 'W': // raise arm
+            arm_raise();
+            break;
+        case 'S': // lower arm
+            arm_lower();
+            break;
+        case 'A': // open claw
+            claw_open();
+            break;
+        case 'D': // close claw
+            claw_close();
+            break;
+        default:
+            Serial.println("Not Recognized");
     }
+    return;
 }
 
 // Custom methods
+// Motor
+void go_up() {
+    step = -1;
+    lv_stepper.setMaxSpeed(MAX_SPEED);
+    lv_stepper.setAcceleration(Y_ACCEL);
+    lv_stepper.moveTo(-lv_stepper.currentPosition() - step);
+
+    rv_stepper.setMaxSpeed(MAX_SPEED);
+    rv_stepper.setAcceleration(Y_ACCEL);
+    rv_stepper.moveTo(-lv_stepper.currentPosition() - step);
+
+    #if VERBOSE == 1
+    Serial.println("Going up ... ");
+    #endif
+
+    run_motors();
+
+    return;
+}
+
+void go_down() {
+    step = 1;
+    lv_stepper.setMaxSpeed(MAX_SPEED);
+    lv_stepper.setAcceleration(Y_ACCEL);
+    lv_stepper.moveTo(-lv_stepper.currentPosition() - step);
+
+    rv_stepper.setMaxSpeed(MAX_SPEED);
+    rv_stepper.setAcceleration(Y_ACCEL);
+    rv_stepper.moveTo(-lv_stepper.currentPosition() - step);
+
+    #if VERBOSE == 1
+    Serial.println("Going down ... ");
+    #endif
+
+    run_motors();
+
+    return;
+}
+
+void go_left() {
+    step = - 1;
+    h_stepper.setMaxSpeed(MAX_SPEED);
+    h_stepper.setAcceleration(X_ACCEL);
+    h_stepper.moveTo(-lv_stepper.currentPosition() - step);
+
+    #if VERBOSE == 1
+    Serial.println("Going left ... ");
+    #endif
+
+    run_motors();
+
+    return;
+}
+
+void go_right() {
+    step = 1;
+    h_stepper.setMaxSpeed(MAX_SPEED);
+    h_stepper.setAcceleration(Y_ACCEL);
+    h_stepper.moveTo(-lv_stepper.currentPosition() - step);
+
+    #if VERBOSE == 1
+    Serial.println("Going right ... ");
+    #endif
+
+    run_motors();
+
+    return;
+}
+
+void run_motors() {
+    bool flag = true;
+    while(flag == true) {
+        flag = false;
+        if (h_stepper.distanceToGo() != 0) {
+            #if VERBOSE == 1
+            Serial.println("Running horizontal_stepper ... ");
+            #endif
+            h_stepper.run();
+            flag = true;
+        }
+        if (lv_stepper.distanceToGo() != 0) {
+            #if VERBOSE == 1
+            Serial.println("Running left_vertical_stepper ... ");
+            #endif
+            lv_stepper.run();
+            flag = true;
+        }
+        if (rv_stepper.distanceToGo() != 0) {
+            #if VERBOSE == 1
+            Serial.println("Running right_vertical_stepper ... ");
+            #endif
+            rv_stepper.run();
+            flag = true;
+        }
+
+    }
+
+    #if VERBOSE == 1
+    Serial.println("End motor run\n");
+    #endif
+
+    return;
+}
+
+// Effector
 void arm_raise() {
     // Check if arm is raised
     if (ARM_IS_RAISED != false) {
         #if VERBOSE == 1
-        Serial.println("Arm is already raised");
+        Serial.println("Arm is already raised\n");
         #endif
 
         return;
@@ -175,7 +286,7 @@ void arm_raise() {
     ARM_IS_RAISED = true;
 
     #if VERBOSE == 1
-    Serial.println("Arm is raised");
+    Serial.println("Arm is raised\n");
     #endif
 
     return;
@@ -185,7 +296,7 @@ void arm_lower() {
     // Check if arm is already lowered
     if (ARM_IS_RAISED != true) {
         #if VERBOSE == 1
-        Serial.println("Arm is already lowered");
+        Serial.println("Arm is already lowered\n");
         #endif
 
         return;
@@ -202,7 +313,7 @@ void arm_lower() {
     ARM_IS_RAISED = false;
 
     #if VERBOSE == 1
-    Serial.println("Arm is lowered");
+    Serial.println("Arm is lowered\n");
     #endif
 
     return;
@@ -212,7 +323,7 @@ void claw_open() {
     // Check if claw is already open
     if (CLAW_IS_OPEN != false){
         #if VERBOSE == 1
-        Serial.println("Claw is already open");
+        Serial.println("Claw is already open\n");
         #endif
 
         return;
@@ -220,16 +331,18 @@ void claw_open() {
 
     // Open claw
     //Start turning anti-clockwise
+    claw_servo.attach(CLAW_PIN);
     claw_servo.write(180);
     // Go on turning for the right duration
     delay(CLAW_TURN_TIME);
     // Stop turning
-    claw_servo.write(90);
+    //claw_servo.write(90);
+    claw_servo.detach();
 
     CLAW_IS_OPEN = true;
 
     #if VERBOSE == 1
-    Serial.println("Claw is open");
+    Serial.println("Claw is open\n");
     #endif
 
     return;
@@ -239,7 +352,7 @@ void claw_close() {
     // Check if claw is aready closed
     if (CLAW_IS_OPEN != true) {
         #if VERBOSE == 1
-        Serial.println("Claw is already closed");
+        Serial.println("Claw is already closed\n");
         #endif
 
         return;
@@ -247,16 +360,18 @@ void claw_close() {
 
     // Close claw
     // Start turning clockwise
+    claw_servo.attach(CLAW_PIN);
     claw_servo.write(0);
     // Go on turning for the right duration
     delay(CLAW_TURN_TIME);
     // Stop turning
-    claw_servo.write(90);
+    //claw_servo.write(90);
+    claw_servo.detach();
 
     CLAW_IS_OPEN = false;
 
     #if VERBOSE == 1
-    Serial.println("Claw is closed");
+    Serial.println("Claw is closed\n");
     #endif
 
     return;
