@@ -6,3 +6,4 @@ Tracking changes in the firmware
 - Created new rembot.ino file
 - Added firmware test file
 - Created Rembot folder
+- Added `remote_bot` implementation

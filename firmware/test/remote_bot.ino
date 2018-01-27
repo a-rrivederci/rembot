@@ -22,6 +22,7 @@
 #define MAX_SPEED 1000
 #define ARM_TURN_TIME 80
 #define CLAW_TURN_TIME 140
+#define STEP 50
 // Hardware defines
 #define BAUD_RATE 9600
 #define ARM_PIN 10
@@ -162,14 +163,14 @@ void serialEvent() {
 // Custom methods
 // Motor
 void go_up() {
-    step = -1;
+    step = STEP;
     lv_stepper.setMaxSpeed(MAX_SPEED);
     lv_stepper.setAcceleration(Y_ACCEL);
-    lv_stepper.moveTo(-lv_stepper.currentPosition() - step);
+    lv_stepper.moveTo(lv_stepper.currentPosition() - step);
 
     rv_stepper.setMaxSpeed(MAX_SPEED);
     rv_stepper.setAcceleration(Y_ACCEL);
-    rv_stepper.moveTo(-lv_stepper.currentPosition() - step);
+    rv_stepper.moveTo(lv_stepper.currentPosition() - step);
 
     #if VERBOSE == 1
     Serial.println("Going up ... ");
@@ -181,14 +182,14 @@ void go_up() {
 }
 
 void go_down() {
-    step = 1;
+    step = -1*STEP;
     lv_stepper.setMaxSpeed(MAX_SPEED);
     lv_stepper.setAcceleration(Y_ACCEL);
-    lv_stepper.moveTo(-lv_stepper.currentPosition() - step);
+    lv_stepper.moveTo(lv_stepper.currentPosition() - step);
 
     rv_stepper.setMaxSpeed(MAX_SPEED);
     rv_stepper.setAcceleration(Y_ACCEL);
-    rv_stepper.moveTo(-lv_stepper.currentPosition() - step);
+    rv_stepper.moveTo(lv_stepper.currentPosition() - step);
 
     #if VERBOSE == 1
     Serial.println("Going down ... ");
@@ -200,10 +201,10 @@ void go_down() {
 }
 
 void go_left() {
-    step = - 1;
+    step = STEP;
     h_stepper.setMaxSpeed(MAX_SPEED);
     h_stepper.setAcceleration(X_ACCEL);
-    h_stepper.moveTo(-lv_stepper.currentPosition() - step);
+    h_stepper.moveTo(h_stepper.currentPosition() - step);
 
     #if VERBOSE == 1
     Serial.println("Going left ... ");
@@ -215,10 +216,10 @@ void go_left() {
 }
 
 void go_right() {
-    step = 1;
+    step = -1*STEP;
     h_stepper.setMaxSpeed(MAX_SPEED);
     h_stepper.setAcceleration(Y_ACCEL);
-    h_stepper.moveTo(-lv_stepper.currentPosition() - step);
+    h_stepper.moveTo(h_stepper.currentPosition() - step);
 
     #if VERBOSE == 1
     Serial.println("Going right ... ");

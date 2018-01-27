@@ -16,6 +16,7 @@ Tracking changes in the gui.
 - Serial testing template
 - Added pyserial to requirements
 - Established communication protocol with arduino
+- `remote_bot` test implementation
 
 ### Changed
 - Moved software into interface
