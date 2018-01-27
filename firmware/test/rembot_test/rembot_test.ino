@@ -20,10 +20,11 @@
 #define VERSION_PATCH 0
 #define FINE_SPEED 1000
 #define MAX_SPEED 1000
-#define TURN_TIME 90
+#define ARM_TURN_TIME 80
+#define CLAW_TURN_TIME 130
 // Hardware defines
 #define BAUD_RATE 9600
-#define ARM_PIN 5
+#define ARM_PIN 10
 #define CLAW_PIN 9
 #define INTERRUPT_PIN1 1
 #define INTERRUPT_PIN2 2
@@ -43,7 +44,6 @@ byte CLAW_IS_OPEN = 0; // false;
 // Program variables
 double X_ACCEL = 100.0;
 double Y_ACCEL = 100.0;
-int pos = 0;
 char cmd;
 
 // Adafruit MotorShield AFMS bottom - 0 and AFSM top - 1
@@ -132,14 +132,20 @@ void loop() {
     // lv_stepper.run();
     // rv_stepper.run();
 
-    // Test raise_arm
+    // Test claw and arm
     if (Serial.available()) {
         switch(Serial.read()) {
+            case 'W': // raise arm
+                arm_raise();
+                break;
+            case 'S': // lower arm
+                arm_lower();
+                break;
             case 'A': // open claw
-                open_claw();
+                claw_open();
                 break;
             case 'D': // close claw
-                close_claw();
+                claw_close();
                 break;
             default:
                 Serial.println("Not Recognized");
@@ -147,84 +153,110 @@ void loop() {
     }
 }
 
-// Input: degrees to raise the arm
-void raise_arm(int deg) {
+// Custom methods
+void arm_raise() {
     // Check if arm is raised
     if (ARM_IS_RAISED != false) {
+        #if VERBOSE == 1
+        Serial.println("Arm is already raised");
+        #endif
+
         return;
     }
+
     // Raise arm
-    for (pos = 0; pos <= deg; pos += 1) { // goes from 0 degrees to 180 degrees in steps of 1 degree
-        arm_servo.write(pos);              // tell servo to go to position in variable 'pos'
-        delay(15);                       // waits 15ms for the servo to reach the position
-    }
+    //Start turning anti-clockwise
+    arm_servo.write(180);
+    // Go on turning for the right duration
+    delay(ARM_TURN_TIME);
+    // Stop turning
+    arm_servo.write(90);
+
     ARM_IS_RAISED = true;
 
-    return;
-}
-
-// Input: degrees to lower the arm
-void lower_arm(int deg) {
-    // Check if arm is already lowered
-    if (ARM_IS_RAISED != true) {
-        return;
-    }
-    // Lower arm
-    for (pos = deg; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
-        arm_servo.write(pos);              // tell servo to go to position in variable 'pos'
-        delay(15);                       // waits 15ms for the servo to reach the position
-    }
-    ARM_IS_RAISED = false;
-
-    return;
-}
-
-// Input: degrees to open claw
-void close_claw() {
-    // Check if claw is aready closed
-    if (CLAW_IS_OPEN != true) {
-        #if VERBOSE == 1
-        Serial.println("Claw is already closed");
-        #endif
-        return;
-        
-    }
-    // Close claw
-    // Start turning clockwise
-    claw_servo.write(0);
-    // Go on turning for the right duration
-    delay(TURN_TIME);
-    // Stop turning
-    claw_servo.write(90);
-
-    CLAW_IS_OPEN = false;
     #if VERBOSE == 1
-    Serial.println("Claw is closed");
+    Serial.println("Arm is raised");
     #endif
 
     return;
 }
 
-// Input: degrees to open claw
-void open_claw() {
+void arm_lower() {
+    // Check if arm is already lowered
+    if (ARM_IS_RAISED != true) {
+        #if VERBOSE == 1
+        Serial.println("Arm is already lowered");
+        #endif
+
+        return;
+    }
+
+    // Lower arm
+    //Start turning clockwise
+    arm_servo.write(0);
+    // Go on turning for the right duration
+    delay(ARM_TURN_TIME);
+    // Stop turning
+    arm_servo.write(90);
+
+    ARM_IS_RAISED = false;
+
+    #if VERBOSE == 1
+    Serial.println("Arm is lowered");
+    #endif
+
+    return;
+}
+
+void claw_open() {
     // Check if claw is already open
     if (CLAW_IS_OPEN != false){
         #if VERBOSE == 1
         Serial.println("Claw is already open");
         #endif
+
         return;
     }
+
     // Open claw
     //Start turning anti-clockwise
     claw_servo.write(180);
     // Go on turning for the right duration
-    delay(TURN_TIME);
+    delay(CLAW_TURN_TIME);
     // Stop turning
     claw_servo.write(90);
 
     CLAW_IS_OPEN = true;
+
     #if VERBOSE == 1
     Serial.println("Claw is open");
+    #endif
+
+    return;
+}
+
+void claw_close() {
+    // Check if claw is aready closed
+    if (CLAW_IS_OPEN != true) {
+        #if VERBOSE == 1
+        Serial.println("Claw is already closed");
+        #endif
+
+        return;
+    }
+
+    // Close claw
+    // Start turning clockwise
+    claw_servo.write(0);
+    // Go on turning for the right duration
+    delay(CLAW_TURN_TIME);
+    // Stop turning
+    claw_servo.write(90);
+
+    CLAW_IS_OPEN = false;
+
+    #if VERBOSE == 1
+    Serial.println("Claw is closed");
     #endif
 
     return;
