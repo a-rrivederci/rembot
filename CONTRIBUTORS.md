@@ -4,4 +4,4 @@
 - Alvin Ho
 - Dev Bhullar
 - Refayet Siam
-- Elvis Eshikena
+- [Elvis Eshikena](http://github.com/eeshiken)
