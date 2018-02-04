@@ -27,7 +27,7 @@ class Ability(QObject):
     def __init__(self):
         super().__init__()
         self.log = Log(self)
-        self.arduino = Arduino('Paintbot')
+        #self.arduino = Arduino('Paintbot')
         self.message.emit("Pairing Bot ...")
 
     def run_process(self):

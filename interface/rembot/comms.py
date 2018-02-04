@@ -34,3 +34,4 @@ class Arduino(object):
 
     def __del__(self):
         self.port.close()
+        pass
