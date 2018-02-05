@@ -71,7 +71,7 @@ if __name__ == '__main__':
     cv.namedWindow("Result", cv.WINDOW_NORMAL)
     #cv.imshow('Original', SRC)
     cv.imshow("Result", RES)
-    cv.imwrite("interface\images\k4_2.png", RES)
+    cv.imwrite("interface\\images\\k4_2.png", RES)
 
     # Tap 'q' to exit
     KEY = cv.waitKey(0) & 0xFF
