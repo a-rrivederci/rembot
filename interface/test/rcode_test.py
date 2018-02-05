@@ -31,15 +31,15 @@ if __name__ == "__main__":
     PY_LOGGER.info("Beginning test")
     
     """
-    Lift Pen - G2 P0
-    Reset - G0
-    Drop pen - G2 P1
-    Left - G1 X10 Y0 F10000
-    Down - G1 X10 Y10 F1000
-    Right - G1 X0 Y10 F1000
-    Up - G1 X0 Y0 F1000
+    Lift Pen - R2 P0
+    Reset - R0
+    Drop pen - R2 P1
+    Left - R1 X10 Y0 F10000
+    Down - R1 X10 Y10 F1000
+    Right - R1 X0 Y10 F1000
+    Up - R1 X0 Y0 F1000
     """
-    for cmd in ["G2 P0\n", "G0\n", "G2 P1\n", "G1 X10 Y0 F10000\n", "G1 X10 Y10 F1000\n", "G1 X0 Y10 F1000\n", "G1 X0 Y0 F1000\n", "G2 P0\n", "G0\n" ]:
+    for cmd in ["R2 P0\n", "R0\n", "R2 P1\n", "R1 X10 Y0 F10000\n", "R1 X10 Y10 F1000\n", "R1 X0 Y10 F1000\n", "R1 X0 Y0 F1000\n", "R2 P0\n", "R0\n" ]:
         arduino.send_str_data(cmd)
         if DEBUG:
             PY_LOGGER.info("Sending {}".format(cmd)) 
