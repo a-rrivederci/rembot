@@ -15,7 +15,7 @@ class Arduino(object):
     """ Rembot communication class """
     def __init__(self, ability):
         self.name = ability
-        self.port = serial.Serial('COM5', 9600)
+        self.port = serial.Serial('COM4', 9600)
         self.title = self.read_str_data()
 
     def send_str_data(self, string):

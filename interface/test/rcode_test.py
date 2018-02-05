@@ -30,24 +30,30 @@ if __name__ == "__main__":
     arduino = Arduino("Gcode_Test")
     PY_LOGGER.info("Beginning test")
     
+    # See PROTOCOL.md for commsnd list
     """
-    Lift Pen - R2 P0
-    Reset - R0
-    Drop pen - R2 P1
-    Left - R1 X10 Y0 F10000
-    Down - R1 X10 Y10 F1000
-    Right - R1 X0 Y10 F1000
-    Up - R1 X0 Y0 F1000
+    Lift pen
+    Reset
+    Drop Pen
+    Left
+    Down
+    Right
+    Up
+    Lift Pen
     """
-    for cmd in ["R2 P0\n", "R0\n", "R2 P1\n", "R1 X10 Y0 F10000\n", "R1 X10 Y10 F1000\n", "R1 X0 Y10 F1000\n", "R1 X0 Y0 F1000\n", "R2 P0\n", "R0\n" ]:
+    for cmd in ["R02 P0\r\n", "R00\r\n", "R02 P1\r\n", ";\r\n"]:
+        while(1):
+            _m = arduino.read_str_data()
+            if _m == '>':
+                break
+            else:
+                MCU_LOGGER.info(_m)
+        if DEBUG:
+            PY_LOGGER.info("Sending {}".format(cmd))
+        
         arduino.send_str_data(cmd)
-        if DEBUG:
-            PY_LOGGER.info("Sending {}".format(cmd)) 
-        sleep(.1)
-
-        while(arduino.read_str_data() != 'S'): 
-            continue
 
         sleep(.1)
-        if DEBUG:
-            MCU_LOGGER.info(arduino.read_str_data()) # debug message
+        
+        while(arduino.read_str_data() != 'S'):
+            pass
