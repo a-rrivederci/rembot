@@ -4,5 +4,5 @@ GUI for the Rembot plotter
 # Install
 ```bash
     # Install requirements 
-    pip install -r requirement.txt
+    pip3 install -r requirement.txt
 ```
