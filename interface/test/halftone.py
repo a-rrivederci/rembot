@@ -46,9 +46,9 @@ def line_tone(image, window):
             saturation = np.sum(window_pixels) / (window*window)
 
             if saturation > 127:
-                haltone_img[i:i+window, j:j+window] = tone
-            elif saturation < 127:
                 pass
+            elif saturation < 127:
+                haltone_img[i:i+window, j:j+window] = tone
         
     return haltone_img
 
@@ -71,7 +71,7 @@ if __name__ == '__main__':
     cv.namedWindow("Result", cv.WINDOW_NORMAL)
     #cv.imshow('Original', SRC)
     cv.imshow("Result", RES)
-    cv.imwrite("interface\images\k7.png", RES)
+    cv.imwrite("interface\\images\\k4_2.png", RES)
 
     # Tap 'q' to exit
     KEY = cv.waitKey(0) & 0xFF
