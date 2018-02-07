@@ -20,12 +20,13 @@ void setup() {
 
 void stopHorizontalMotor()
 {
-
     horizontal_stepper->stop();
+    return;
 }
 
 void stopVerticalMotors()
 {
     left_vertical_stepper->stop();
     right_vertical_stepper->stop();
+    return;
 }
