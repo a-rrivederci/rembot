@@ -57,7 +57,7 @@ Adafruit_MotorShield AFMS1(0x61); // Rightmost jumper closed
 Adafruit_StepperMotor *horizontal_stepper = AFMS0.getStepper(200, 2);
 
 // Connect to the top shield
-Adafruit_StepperMotor *left_vertical_stepper = AFMS1.getStepper(200, 1);
+Adafruit_StepperMotor *left_vertical_stepper = AFMS1.getStepper(200, 2);
 Adafruit_StepperMotor *right_vertical_stepper = AFMS1.getStepper(200, 2);
 
 // Wrappers for the horizontal_stepper
