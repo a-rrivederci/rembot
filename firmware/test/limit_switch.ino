@@ -23,15 +23,18 @@ void setup() {
 void stopHorizontalMotor()
 {
     //horizontal_stepper->stop();
-    Serial.println("works_horiz");
+    h_stepper.stop();
+    //Serial.println("works_horiz");
     return;
 }
 
 void stopVerticalMotors()
 {
     //left_vertical_stepper->stop();
+    lv_stepper.stop();
+    rv_stepper.stop();
     //right_vertical_stepper->stop();
-    Serial.println("works_vertil");
+    //Serial.println("works_vertil");
     return;
 }
 
