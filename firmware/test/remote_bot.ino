@@ -21,15 +21,14 @@
 #define FINE_SPEED 1000
 #define MAX_SPEED 1000
 #define ARM_TURN_TIME 80
-#define CLAW_TURN_TIME 140
+#define CLAW_TURN_TIME 110
 #define STEP 50
 // Hardware defines
 #define BAUD_RATE 9600
 #define ARM_PIN 10
 #define CLAW_PIN 9
-#define INTERRUPT_PIN1 1
-#define INTERRUPT_PIN2 2
-#define INTERRUPT_PIN3 3
+#define HORIZONTAL_INTERRUPT_PIN 2
+#define RIGHT_INTERRUPT_PIN 3 // Can only use 2 and 3 for Uno ISR
 
 
 // Variables
@@ -40,7 +39,7 @@ Servo claw_servo; //servo2
 // Flags
 byte CONNECTED = 0; //false
 byte ARM_IS_RAISED = 0; // false;
-byte CLAW_IS_OPEN = 0; // false;
+byte CLAW_IS_OPEN = 1; // false;
 
 // Program variables
 double X_ACCEL = 100.0;
@@ -57,7 +56,7 @@ Adafruit_MotorShield AFMS1(0x61); // Rightmost jumper closed
 Adafruit_StepperMotor *horizontal_stepper = AFMS0.getStepper(200, 2);
 
 // Connect to the top shield
-Adafruit_StepperMotor *left_vertical_stepper = AFMS1.getStepper(200, 2);
+Adafruit_StepperMotor *left_vertical_stepper = AFMS1.getStepper(200, 1);
 Adafruit_StepperMotor *right_vertical_stepper = AFMS1.getStepper(200, 2);
 
 // Wrappers for the horizontal_stepper
@@ -110,19 +109,21 @@ void setup() {
     AFMS0.begin();
     AFMS1.begin();
 
-    // lv_stepper.setMaxSpeed(MAX_SPEED);
-    // lv_stepper.setAcceleration(X_ACCEL);
-    // lv_stepper.moveTo(100);
+    // Interrupt
+    // pinMode(RIGHT_INTERRUPT_PIN, INPUT_PULLUP);
+    // pinMode(HORIZONTAL_INTERRUPT_PIN, INPUT_PULLUP);
+    // attachInterrupt(digitalPinToInterrupt(RIGHT_INTERRUPT_PIN), stopVerticalMotors, RISING);
+    // attachInterrupt(digitalPinToInterrupt(HORIZONTAL_INTERRUPT_PIN), stopHorizontalMotor, RISING);
     
-    // rv_stepper.setMaxSpeed(MAX_SPEED);
-    // rv_stepper.setAcceleration(X_ACCEL);
-    // rv_stepper.moveTo(100);
     // Attach Servos
     arm_servo.attach(ARM_PIN);
     claw_servo.attach(CLAW_PIN);
 
     arm_servo.write(90); // No motion
     claw_servo.write(90); // No motion
+
+    move_steppers(0,100,0,300,1,1,MAX_SPEED);
+    run_motors();
 }
 
 void loop() {
@@ -268,7 +269,7 @@ void run_motors() {
 // Effector
 void arm_raise() {
     // Check if arm is raised
-    if (ARM_IS_RAISED != false) {
+    if (ARM_IS_RAISED != 0) {
         #if VERBOSE == 1
         Serial.println("Arm is already raised\n");
         #endif
@@ -278,13 +279,15 @@ void arm_raise() {
 
     // Raise arm
     //Start turning anti-clockwise
+    arm_servo.attach(ARM_PIN);
     arm_servo.write(180);
     // Go on turning for the right duration
     delay(ARM_TURN_TIME);
     // Stop turning
-    arm_servo.write(90);
+    //arm_servo.write(90);
+    arm_servo.detach();
 
-    ARM_IS_RAISED = true;
+    ARM_IS_RAISED = 1;
 
     #if VERBOSE == 1
     Serial.println("Arm is raised\n");
@@ -295,7 +298,7 @@ void arm_raise() {
 
 void arm_lower() {
     // Check if arm is already lowered
-    if (ARM_IS_RAISED != true) {
+    if (ARM_IS_RAISED != 1) {
         #if VERBOSE == 1
         Serial.println("Arm is already lowered\n");
         #endif
@@ -305,13 +308,15 @@ void arm_lower() {
 
     // Lower arm
     //Start turning clockwise
+    arm_servo.attach(ARM_PIN);
     arm_servo.write(0);
     // Go on turning for the right duration
     delay(ARM_TURN_TIME);
     // Stop turning
-    arm_servo.write(90);
+    arm_servo.detach();
+    //arm_servo.write(90);
 
-    ARM_IS_RAISED = false;
+    ARM_IS_RAISED = 0;
 
     #if VERBOSE == 1
     Serial.println("Arm is lowered\n");
@@ -322,7 +327,7 @@ void arm_lower() {
 
 void claw_open() {
     // Check if claw is already open
-    if (CLAW_IS_OPEN != false){
+    if (CLAW_IS_OPEN != 0){
         #if VERBOSE == 1
         Serial.println("Claw is already open\n");
         #endif
@@ -340,7 +345,7 @@ void claw_open() {
     //claw_servo.write(90);
     claw_servo.detach();
 
-    CLAW_IS_OPEN = true;
+    CLAW_IS_OPEN = 1;
 
     #if VERBOSE == 1
     Serial.println("Claw is open\n");
@@ -351,7 +356,7 @@ void claw_open() {
 
 void claw_close() {
     // Check if claw is aready closed
-    if (CLAW_IS_OPEN != true) {
+    if (CLAW_IS_OPEN != 1) {
         #if VERBOSE == 1
         Serial.println("Claw is already closed\n");
         #endif
@@ -369,11 +374,50 @@ void claw_close() {
     //claw_servo.write(90);
     claw_servo.detach();
 
-    CLAW_IS_OPEN = false;
+    CLAW_IS_OPEN = 0;
 
     #if VERBOSE == 1
     Serial.println("Claw is closed\n");
     #endif
+
+    return;
+}
+
+// Motor 3 should be the y direction
+// Inputs: initial and final x coordinate, initial and final y coordinate // dir = 0 = CW //dir = 1 = ACW
+void move_steppers(int pos_x1,int pos_x2,int pos_y1, int pos_y2,int dirX,int dirY, int custom_speed) {
+    int mult = 1;
+    int deg_x = mult*(pos_x2 - pos_x1);
+    int deg_y = mult*(pos_y2 - pos_y1);
+
+    if (dirX = 1) {
+        lv_stepper.setMaxSpeed(custom_speed);
+        lv_stepper.setAcceleration(X_ACCEL);
+        lv_stepper.moveTo(-lv_stepper.currentPosition()-deg_x);
+
+        rv_stepper.setMaxSpeed(custom_speed);
+        rv_stepper.setAcceleration(X_ACCEL);
+        rv_stepper.moveTo(-rv_stepper.currentPosition()-deg_x);
+    }
+    if (dirX = 0) {
+        lv_stepper.setMaxSpeed(custom_speed);
+        lv_stepper.setAcceleration(X_ACCEL);
+        lv_stepper.moveTo(-lv_stepper.currentPosition()- deg_x);
+
+        rv_stepper.setMaxSpeed(custom_speed);
+        rv_stepper.setAcceleration(X_ACCEL);
+        rv_stepper.moveTo(-rv_stepper.currentPosition()-deg_x);
+    }
+    if (dirY = 1) {
+        h_stepper.setMaxSpeed(custom_speed);
+        h_stepper.setAcceleration(Y_ACCEL);
+        h_stepper.moveTo(-h_stepper.currentPosition()-deg_y);
+    }
+    if (dirY = 0) {
+        h_stepper.setMaxSpeed(custom_speed);
+        h_stepper.setAcceleration(Y_ACCEL);
+        h_stepper.moveTo(-h_stepper.currentPosition()-deg_y);
+    }
 
     return;
 }

@@ -32,16 +32,9 @@ if __name__ == "__main__":
     
     # See PROTOCOL.md for commsnd list
     """
-    Lift pen
-    Reset
-    Drop Pen
-    Left
-    Down
-    Right
-    Up
-    Lift Pen
+    Reset line reset
     """
-    for cmd in ["R02 P0\r\n", "R00\r\n", "R02 P1\r\n", ";\r\n"]:
+    for cmd in ["R00\r\n", "R01 x0 X10 y0 Y0\r\n", "R00\r\n"]:
         while(1):
             _m = arduino.read_str_data()
             if _m == '>':
