@@ -11,6 +11,7 @@ import io
 import logging
 from time import sleep
 from arduino import Arduino
+from PyAlgorithm import Algo
 
 DEBUG = 1 # True
 
@@ -29,6 +30,7 @@ MCU_LOGGER = logging.getLogger("rembot.arduino")
 if __name__ == "__main__":
     arduino = Arduino("Gcode_Test")
     PY_LOGGER.info("Beginning test")
+    algo = Algo
     
     # See PROTOCOL.md for commsnd list
     """
