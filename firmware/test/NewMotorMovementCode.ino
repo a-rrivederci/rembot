@@ -27,6 +27,7 @@
 #define FINE_SPEED 1000
 #define MAX_SPEED 1000
 #define STEP 50
+#define 
 // Hardware defines
 #define BAUD_RATE 9600
 #define HORIZONTAL_INTERRUPT_PIN 2
@@ -156,6 +157,82 @@ void go_right() {
     return;
 }
 
+void resetSteppers() {
+
+    #if VERBOSE == 1
+    Serial.println("Going to limit switches ... ");
+    #endif
+
+    for(int i = 0; i < 10000; i++)
+        go_up();
+    for(int i = 0; i < 2000; i++)
+        go_left();
+    //step = STEP;
+    //v_stepper.setMaxSpeed(MAX_SPEED);
+    //v_stepper.setAcceleration(Y_ACCEL);
+    //v_stepper.moveTo(v_stepper.currentPosition() - 10000000*step);
+
+    //h_stepper.setMaxSpeed(MAX_SPEED);
+    //h_stepper.setAcceleration(Y_ACCEL);
+    //h_stepper.moveTo(v_stepper.currentPosition() + 10000000*step);
+
+    //v_stepper.runToPosition();
+    //h_stepper.runToPosition();
+
+    return;
+}
+
+void findCorner() {
+
+    #if VERBOSE == 1
+    Serial.println("Finding corner of the page ... ");
+    #endif
+
+    for(int i = 0; i < 7500; i++)
+        go_down();
+    for(int i = 0; i < 500; i++)
+        go_right();
+
+    //step = STEP;
+    //v_stepper.setMaxSpeed(MAX_SPEED);
+    //v_stepper.setAcceleration(Y_ACCEL);
+    //v_stepper.moveTo(v_stepper.currentPosition() + 7500*step);
+
+    //h_stepper.setMaxSpeed(MAX_SPEED);
+    //h_stepper.setAcceleration(Y_ACCEL);
+    //h_stepper.moveTo(v_stepper.currentPosition() - 500*step);
+
+    //v_stepper.runToPosition();
+    //h_stepper.runToPosition();
+
+    return;
+}
+
+void findEdgeAndStepDown() {
+
+    #if VERBOSE == 1
+    Serial.println("Going to the beginnig of the margin ... ");
+    #endif
+    
+    go_down();
+
+    for(int i = 0; i < 1000; i++)
+        go_left();
+    
+    //step = STEP;
+
+    //v_stepper.setMaxSpeed(MAX_SPEED);
+    //v_stepper.setAcceleration(Y_ACCEL);
+    //v_stepper.moveTo(v_stepper.currentPosition() + step);
+
+    //h_stepper.setMaxSpeed(MAX_SPEED);
+    //h_stepper.setAcceleration(Y_ACCEL);
+    //h_stepper.moveTo(v_stepper.currentPosition() + 50000*step);
+
+    //h_stepper.runToPosition();
+
+    return;
+}
 
 
 
