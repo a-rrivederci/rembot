@@ -9,7 +9,10 @@
 // This code assumes that we have vertical steppers connected to one pin on arduino (possible thing to do)
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+struct Coordinate{
+    int x = -1; //will have value of 0 at corner (limit switch) and max at other end, units are in per step defined, initialized with garbage value of -1, must call resetMotors()!
+    int y = -1; //will have value of 0 at corner (limit switch) and max at other end, units are in per step defined, ,initialized with garbage value of -1, must call resetMotors()!
+}
 // Imports
 #include <AccelStepper.h>
 #include <Adafruit_MotorShield.h>
@@ -109,6 +112,8 @@ void go_up() {
 
     v_stepper.runToPosition();
 
+    Coordinate.y -= 1;
+
     return;
 }
 
@@ -123,6 +128,8 @@ void go_down() {
     #endif
 
     v_stepper.runToPosition();
+
+    Coordinate.y += 1;
 
     return;
 }
@@ -139,6 +146,7 @@ void go_left() {
 
     h_stepper.runToPosition();
 
+    Coordinate.x -= 1;
     return;
 }
 
@@ -154,10 +162,12 @@ void go_right() {
 
     h_stepper.runToPosition();
 
+    Coordinate.x += 1;
+
     return;
 }
 
-void resetSteppers() {
+void reset_steppers() {
 
     #if VERBOSE == 1
     Serial.println("Going to limit switches ... ");
@@ -167,6 +177,9 @@ void resetSteppers() {
         go_up();
     for(int i = 0; i < 2000; i++)
         go_left();
+    
+    Coordinate.x = 0;
+    Coordinate.y = 0;
     //step = STEP;
     //v_stepper.setMaxSpeed(MAX_SPEED);
     //v_stepper.setAcceleration(Y_ACCEL);
@@ -182,7 +195,7 @@ void resetSteppers() {
     return;
 }
 
-void findCorner() {
+void find_corner() {
 
     #if VERBOSE == 1
     Serial.println("Finding corner of the page ... ");
@@ -208,7 +221,7 @@ void findCorner() {
     return;
 }
 
-void findEdgeAndStepDown() {
+/*void findEdgeAndStepDown() {
 
     #if VERBOSE == 1
     Serial.println("Going to the beginnig of the margin ... ");
@@ -232,6 +245,21 @@ void findEdgeAndStepDown() {
     //h_stepper.runToPosition();
 
     return;
+}*/
+
+void move_to_coordinate(int X, int Y){ //absolute not relative 
+    if(Coordinate.x < X)
+        while(Coordinate.x != X)
+            go_right();
+    else 
+        while(Coordinate.x != X)
+            go_left();
+    if(Coordinate.y < Y)
+        while(Coordinate.y != Y)
+            go_down();
+    else 
+        while(Coordinate.y != Y)
+            go_up();
 }
 
 

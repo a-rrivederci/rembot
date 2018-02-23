@@ -86,6 +86,42 @@ void setup() {
     claw_servo.attach(CLAW_PIN);
 }
 
+
+void loop() {
+}
+
+void serialEvent() {
+    switch(Serial.read()) {
+        case 'U': // go up
+            go_up();
+            break;
+        case 'J': // go down
+            go_down();
+            break;
+        case 'H': // go left
+            go_left();
+            break;
+        case 'K': // go right
+            go_right();
+            break;
+        case 'W': // raise arm
+            arm_raise();
+            break;
+        case 'S': // lower arm
+            arm_lower();
+            break;
+        case 'A': // open claw
+            claw_open();
+            break;
+        case 'D': // close claw
+            claw_close();
+            break;
+        default:
+            Serial.println("Not Recognized");
+    }
+    return;
+}
+
 void run_motors() {
     bool flag = true;
     while(flag == true) {
