@@ -1,13 +1,22 @@
-from setuptools import setup
+# -*- coding: utf-8 -*-
+
+from setuptools import setup, find_packages
+
+with open('README.rst') as f:
+    README = f.read()
+
+with open('LICENSE') as f:
+    LICENSE = f.read()
 
 setup (
     name='rembot',
-    version='1.0.0',
+    version='0.1.0',
     description='Rembot graphical user interface',
-    url='http://github.com/technovus-sfu/',
+    long_description=README,
+    url='http://github.com/attackle/rembot/',
     author='eeshiken',
     author_email='eeshiken@sfu.ca',
-    license='MIT',
-    packages=['rembot'],
+    license=LICENSE,
+    packages=find_packages(exclude=('tests', 'docs')),
     zip_safe=False
 )

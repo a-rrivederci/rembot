@@ -1,2 +1,4 @@
-pyqt5==5.9.2
-pyserial==3.4
+nose
+pyqt5
+pyserial
+sphinx
