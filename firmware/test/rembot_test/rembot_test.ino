@@ -1,4 +1,4 @@
-// Runs the three stepper motors, and the servo
+// Tests the three stepper motors, and the servo
 // License is available in LICENSE
 // @version 0.1.0
 // @authors Harsimranjeet Eeshiken
