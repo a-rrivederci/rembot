@@ -23,7 +23,7 @@ from abilities import PaintBot
 class CoreUI(QWidget):
     ''' Core Ui class '''
     status_message = pyqtSignal(str)
-    images_path = "interface/rembot/assets/images/"
+    assets_path = "interface/rembot/assets/images/"
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -233,7 +233,7 @@ class CoreUI(QWidget):
         self.original_img = QLabel(self.original_img_box)
         self.original_img.setMinimumSize(QSize(720, 400))
         self.original_img.setText("")
-        default = self.images_path + "default.jpg"
+        default = self.assets_path + "default.jpg"
         self.original_img.setPixmap(QPixmap(default))
         self.original_img.setScaledContents(True)
         self.original_img.setObjectName("original_img")
@@ -324,7 +324,7 @@ class CoreUI(QWidget):
 
     def painter(self):
         ''' Start painter program '''
-        file_path = self.images_path + self.file_input.text() # specify filepath
+        file_path = self.assets_path + self.file_input.text() # specify filepath
         if  os.path.exists(file_path) and file_path[-1] != '/':
             self.log.info_log("Loading File") # log
             self.original_img.setPixmap(QPixmap(file_path)) # update display image
