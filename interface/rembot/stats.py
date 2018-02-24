@@ -29,7 +29,7 @@ class Log(QObject):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.logger = logging.getLogger("rembot." + parent.__class__.__name__)\
+        self.logger = logging.getLogger("rembot." + parent.__class__.__name__)
 
     def update_log(self):
         ''' Update the program log data '''

@@ -7,11 +7,12 @@ from math import floor
 
 
 def line_tone(image, window):
-    """
+    '''
     Converts image into line pattern
     img: (object) png/jpg image
     window: (int) window size
-    """
+    '''
+    
     tone = np.zeros((window, window), dtype=np.uint8)
     # Set all values to white
     # tone[tone == 0] = 255

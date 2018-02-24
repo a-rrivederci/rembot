@@ -11,7 +11,9 @@ License is available in LICENSE
 
 from PyQt5.QtCore import QCoreApplication, QMetaObject, Qt
 from PyQt5.QtGui import QFont, QIcon, QPixmap
-from PyQt5.QtWidgets import (QAction, QDesktopWidget, QMainWindow, QMenu, QMessageBox, QSizePolicy, QWidget, QVBoxLayout, QHBoxLayout, QLabel)
+from PyQt5.QtWidgets import (QAction, QDesktopWidget, QMainWindow, QMenu, \
+                             QMessageBox, QSizePolicy, QWidget, QVBoxLayout, 
+                             QHBoxLayout, QLabel)
 from core_ui import CoreUI
 from stats import Log
 
@@ -131,7 +133,7 @@ class MainUI(QMainWindow):
         ''' Centers the window on the screen '''
         screen = QDesktopWidget().screenGeometry()
         size = self.geometry()
-        self.move((screen.width()-size.width())/2, (screen.height()-size.height())/2)
+        self.move((screen.width()-size.width())/3, (screen.height()-size.height())/4)
 
     def closeEvent(self, event):
         ''' Close program dialog box '''

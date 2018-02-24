@@ -17,13 +17,13 @@ from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QHBoxLayout, QLabel,
                              QSpacerItem, QTextEdit, QVBoxLayout, QWidget, QMessageBox)
 
 from stats import Log
-from abilities import PaintBot
+from abilities import LineBot
 
 
 class CoreUI(QWidget):
     ''' Core Ui class '''
     status_message = pyqtSignal(str)
-    assets_path = "interface/rembot/assets/images/"
+    assets_path = "interface/rembot/assets/"
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -31,16 +31,15 @@ class CoreUI(QWidget):
         self.log = Log(self)
         self.log.log_data[str].connect(self.to_log)
 
-        # Abilities
-        self.paint_thread = QThread()
-        # PaintBot
-        self.paint_ability = PaintBot()
-        self.paint_ability.moveToThread(self.paint_thread)
-        self.paint_ability.message[str].connect(self.paint_ability.log.info_log) # paint stderr log
-        self.paint_ability.log.log_data[str].connect(self.to_log) # display ability logger in ui
-        self.paint_ability.finished.connect(self.paint_thread.quit)
-        self.paint_thread.started.connect(self.paint_ability.run_process)
-        self.paint_thread.finished.connect(self.process_done)
+        # Setup process
+        self.bot_thread = QThread()
+        self.linebot = LineBot()
+        self.linebot.moveToThread(self.bot_thread)
+        self.linebot.message[str].connect(self.linebot.log.info_log) # linebot stderr log
+        self.linebot.log.log_data[str].connect(self.to_log) # display ability logger in ui
+        self.linebot.end_flag.connect(self.bot_thread.quit)
+        self.bot_thread.started.connect(self.linebot.run)
+        self.bot_thread.finished.connect(self.bot_process_done)
 
         self.init_ui()
 
@@ -123,11 +122,6 @@ class CoreUI(QWidget):
         font.setPointSize(20)
         self.file_input = QLineEdit()
         self.file_input.setFont(font)
-        size_policy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        size_policy.setHorizontalStretch(0)
-        size_policy.setVerticalStretch(0)
-        size_policy.setHeightForWidth(self.file_input.sizePolicy().hasHeightForWidth())
-        self.file_input.setSizePolicy(size_policy)
         self.file_input.setMinimumSize(QSize(0, 0))
         self.file_input.setAcceptDrops(True)
         self.file_input.setLayoutDirection(Qt.LeftToRight)
@@ -147,37 +141,17 @@ class CoreUI(QWidget):
         self.button_box.setObjectName("button_box")
         ##### Start Button
         self.start_button = QPushButton()
-        size_policy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        size_policy.setHorizontalStretch(0)
-        size_policy.setVerticalStretch(0)
-        size_policy.setHeightForWidth(self.start_button.sizePolicy().hasHeightForWidth())
-        self.start_button.setSizePolicy(size_policy)
         self.start_button.setObjectName("start_button")
         ##### Stop Button
         self.stop_button = QPushButton()
         self.stop_button.setEnabled(False)
-        size_policy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        size_policy.setHorizontalStretch(0)
-        size_policy.setVerticalStretch(0)
-        size_policy.setHeightForWidth(self.stop_button.sizePolicy().hasHeightForWidth())
-        self.stop_button.setSizePolicy(size_policy)
         self.stop_button.setObjectName("stop_button")
         ##### Test Button
         self.abort_button = QPushButton()
         self.abort_button.setEnabled(False)
-        size_policy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        size_policy.setHorizontalStretch(0)
-        size_policy.setVerticalStretch(0)
-        size_policy.setHeightForWidth(self.abort_button.sizePolicy().hasHeightForWidth())
-        self.abort_button.setSizePolicy(size_policy)
         self.abort_button.setObjectName("abort_button")
         ##### Quit Button
         self.quit_button = QPushButton()
-        size_policy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        size_policy.setHorizontalStretch(0)
-        size_policy.setVerticalStretch(0)
-        size_policy.setHeightForWidth(self.quit_button.sizePolicy().hasHeightForWidth())
-        self.quit_button.setSizePolicy(size_policy)
         self.quit_button.setObjectName("quit_button")
         #### Add Buttons to Button Box
         self.button_box.addWidget(self.start_button, 0, 0, 1, 1)
@@ -198,11 +172,6 @@ class CoreUI(QWidget):
         ##### Log output
         self.log_output = QTextEdit(self.log_box)
         self.log_output.setMinimumSize(QSize(720, 600))
-        size_policy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.MinimumExpanding)
-        size_policy.setHorizontalStretch(0)
-        size_policy.setVerticalStretch(1)
-        size_policy.setHeightForWidth(self.log_output.sizePolicy().hasHeightForWidth())
-        self.log_output.setSizePolicy(size_policy)
         self.log_output.setReadOnly(True)
         self.log_output.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.log_output.setObjectName("log_output")
@@ -307,13 +276,15 @@ class CoreUI(QWidget):
     # Abilities
     def start(self):
         ''' Start program '''
-        self.painter()
+        self.line_bot()
 
     def stop(self):
         ''' Stop Any running process '''
-        self.paint_thread.terminate()
+        self.linebot.process_done(1)
+        self.bot_thread.stop()
+        self.bot_thread.wait()
 
-    def process_done(self):
+    def bot_process_done(self):
         ''' Reset ui when a process is done '''
         self.stop_button.setEnabled(False) # disable Stop
         self.abort_button.setEnabled(False) # disable abort
@@ -322,14 +293,15 @@ class CoreUI(QWidget):
         self.log.info_log("Process done!") # log
         self.update_status("Ready")
 
-    def painter(self):
-        ''' Start painter program '''
+    def line_bot(self):
+        ''' Start linebot program '''
+        # Get file from assets_path using user input
         file_path = self.assets_path + self.file_input.text() # specify filepath
         if  os.path.exists(file_path) and file_path[-1] != '/':
             self.log.info_log("Loading File") # log
             self.original_img.setPixmap(QPixmap(file_path)) # update display image
 
-            reply = QMessageBox.question(self, 'Run paint program ?', "Contine to process ?", \
+            reply = QMessageBox.question(self, 'Run linebot program ?', "Contine to process ?", \
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
             if reply == QMessageBox.Yes:
@@ -337,7 +309,8 @@ class CoreUI(QWidget):
                 self.start_button.setEnabled(False) # disable start button
 
                 # Run process
-                self.paint_thread.start()
+                self.linebot.imgpath = file_path
+                self.bot_thread.start()
                 self.update_status("Running ...")
             else:
                 self.log.info_log("Aborting.") # log
