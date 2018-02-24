@@ -42,6 +42,7 @@ void helpMessage() {
     Serial.println(F("G03 C[(claw)] - claw"));
     Serial.println(F("M90 X[(steps)] Y[(steps)] - Set position"));
     Serial.println(F("M100 - this help message"));
+    Serial.println(F(" "));
     Serial.println(F("All commands must end with a newline.")); 
 }
 
