@@ -2,17 +2,17 @@
 // @version 0.1.0
 
 // Motor left and right vertical steppers up
-void go_up() {
+void goUp() {
     step = STEP;
-    v_stepper.setMaxSpeed(MAX_SPEED);
-    v_stepper.setAcceleration(Y_ACCEL);
-    v_stepper.moveTo(v_stepper.currentPosition() - step);
+    vStepper.setMaxSpeed(MAX_SPEED);
+    vStepper.setAcceleration(Y_ACCEL);
+    vStepper.moveTo(vStepper.currentPosition() - step);
     
     #ifdef VERBOSE
     Serial.println("Going up ... ");
     #endif
 
-    v_stepper.runToPosition();
+    vStepper.runToPosition();
 
     global_coords.y -= 1;
 
@@ -20,17 +20,17 @@ void go_up() {
 }
 
 // Move left and right vertical steppers down
-void go_down() {
+void goDown() {
     step = -1*STEP;
-    v_stepper.setMaxSpeed(MAX_SPEED);
-    v_stepper.setAcceleration(Y_ACCEL);
-    v_stepper.moveTo(v_stepper.currentPosition() - step);
+    vStepper.setMaxSpeed(MAX_SPEED);
+    vStepper.setAcceleration(Y_ACCEL);
+    vStepper.moveTo(vStepper.currentPosition() - step);
 
     #ifdef VERBOSE
     Serial.println("Going down ... ");
     #endif
 
-    v_stepper.runToPosition();
+    vStepper.runToPosition();
 
     global_coords.y += 1;
 
@@ -38,34 +38,34 @@ void go_down() {
 }
 
 // Move horizontal stepper left
-void go_left() {
+void goLeft() {
     step = STEP;
-    h_stepper.setMaxSpeed(MAX_SPEED);
-    h_stepper.setAcceleration(X_ACCEL);
-    h_stepper.moveTo(h_stepper.currentPosition() - step);
+    hStepper.setMaxSpeed(MAX_SPEED);
+    hStepper.setAcceleration(X_ACCEL);
+    hStepper.moveTo(hStepper.currentPosition() - step);
 
     #ifdef VERBOSE
     Serial.println("Going left ... ");
     #endif
 
-    h_stepper.runToPosition();
+    hStepper.runToPosition();
 
     global_coords.x -= 1;
     return;
 }
 
 // Move horizontal stepper right
-void go_right() {
+void goRight() {
     step = -1*STEP;
-    h_stepper.setMaxSpeed(MAX_SPEED);
-    h_stepper.setAcceleration(Y_ACCEL);
-    h_stepper.moveTo(h_stepper.currentPosition() - step);
+    hStepper.setMaxSpeed(MAX_SPEED);
+    hStepper.setAcceleration(Y_ACCEL);
+    hStepper.moveTo(hStepper.currentPosition() - step);
 
     #ifdef VERBOSE
     Serial.println("Going right ... ");
     #endif
 
-    h_stepper.runToPosition();
+    hStepper.runToPosition();
 
     global_coords.x += 1;
 
@@ -73,57 +73,57 @@ void go_right() {
 }
 
 // Reset steppers to limit swithces
-void reset_steppers() {
+void resetSteppers() {
 
     #ifdef VERBOSE
     Serial.println("Going to limit switches ... ");
     #endif
 
     for(int i = 0; i < 10000; i++)
-        go_up();
+        goUp();
     for(int i = 0; i < 2000; i++)
-        go_left();
+        goLeft();
     
     global_coords.x = 0;
     global_coords.y = 0;
     //step = STEP;
-    //v_stepper.setMaxSpeed(MAX_SPEED);
-    //v_stepper.setAcceleration(Y_ACCEL);
-    //v_stepper.moveTo(v_stepper.currentPosition() - 10000000*step);
+    //vStepper.setMaxSpeed(MAX_SPEED);
+    //vStepper.setAcceleration(Y_ACCEL);
+    //vStepper.moveTo(vStepper.currentPosition() - 10000000*step);
 
-    //h_stepper.setMaxSpeed(MAX_SPEED);
-    //h_stepper.setAcceleration(Y_ACCEL);
-    //h_stepper.moveTo(v_stepper.currentPosition() + 10000000*step);
+    //hStepper.setMaxSpeed(MAX_SPEED);
+    //hStepper.setAcceleration(Y_ACCEL);
+    //hStepper.moveTo(vStepper.currentPosition() + 10000000*step);
 
-    //v_stepper.runToPosition();
-    //h_stepper.runToPosition();
+    //vStepper.runToPosition();
+    //hStepper.runToPosition();
 
     return;
 }
 
 // Move to page marigin
-void find_corner() {
+void findCorner() {
 
     #ifdef VERBOSE
     Serial.println("Finding corner of the page ... ");
     #endif
 
     for(int i = 0; i < 7500; i++)
-        go_down();
+        goDown();
     for(int i = 0; i < 500; i++)
-        go_right();
+        goRight();
 
     //step = STEP;
-    //v_stepper.setMaxSpeed(MAX_SPEED);
-    //v_stepper.setAcceleration(Y_ACCEL);
-    //v_stepper.moveTo(v_stepper.currentPosition() + 7500*step);
+    //vStepper.setMaxSpeed(MAX_SPEED);
+    //vStepper.setAcceleration(Y_ACCEL);
+    //vStepper.moveTo(vStepper.currentPosition() + 7500*step);
 
-    //h_stepper.setMaxSpeed(MAX_SPEED);
-    //h_stepper.setAcceleration(Y_ACCEL);
-    //h_stepper.moveTo(v_stepper.currentPosition() - 500*step);
+    //hStepper.setMaxSpeed(MAX_SPEED);
+    //hStepper.setAcceleration(Y_ACCEL);
+    //hStepper.moveTo(vStepper.currentPosition() - 500*step);
 
-    //v_stepper.runToPosition();
-    //h_stepper.runToPosition();
+    //vStepper.runToPosition();
+    //hStepper.runToPosition();
 
     return;
 }
@@ -134,22 +134,22 @@ void findEdgeAndStepDown() {
     Serial.println("Going to the beginnig of the margin ... ");
     #endif
 
-    go_down();
+    goDown();
 
     for(int i = 0; i < 1000; i++)
-        go_left();
+        goLeft();
 
     //step = STEP;
 
-    //v_stepper.setMaxSpeed(MAX_SPEED);
-    //v_stepper.setAcceleration(Y_ACCEL);
-    //v_stepper.moveTo(v_stepper.currentPosition() + step);
+    //vStepper.setMaxSpeed(MAX_SPEED);
+    //vStepper.setAcceleration(Y_ACCEL);
+    //vStepper.moveTo(vStepper.currentPosition() + step);
 
-    //h_stepper.setMaxSpeed(MAX_SPEED);
-    //h_stepper.setAcceleration(Y_ACCEL);
-    //h_stepper.moveTo(v_stepper.currentPosition() + 50000*step);
+    //hStepper.setMaxSpeed(MAX_SPEED);
+    //hStepper.setAcceleration(Y_ACCEL);
+    //hStepper.moveTo(vStepper.currentPosition() + 50000*step);
 
-    //h_stepper.runToPosition();
+    //hStepper.runToPosition();
 
     return;
 }
@@ -157,19 +157,20 @@ void findEdgeAndStepDown() {
 
 // Move to  from current position to
 // X coordinate and Y coordinate
-void move_to_coordinate(int X, int Y) { 
+void moveToCoordinate(int X, int Y, int F) { 
     // absolute not relative
+    Serial.println(F);
     if (global_coords.x < X)
         while(global_coords.x != X)
-            go_right();
+            goRight();
     else 
         while (global_coords.x != X)
-            go_left();
+            goLeft();
 
     if (global_coords.y < Y)
         while (global_coords.y != Y)
-            go_down();
+            goDown();
     else 
         while (global_coords.y != Y)
-            go_up();
+            goUp();
 }

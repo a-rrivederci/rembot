@@ -93,16 +93,16 @@ void loop() {
 void serialEvent() {
     switch(Serial.read()) {
         case 'U': // go up
-            go_up();
+            goUp();
             break;
         case 'J': // go down
-            go_down();
+            goDown();
             break;
         case 'H': // go left
-            go_left();
+            goLeft();
             break;
         case 'K': // go right
-            go_right();
+            goRight();
             break;
         case 'W': // raise arm
             arm_raise();

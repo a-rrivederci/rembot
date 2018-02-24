@@ -57,7 +57,7 @@ void serialReady() {
 // @return the value found.  If nothing is found, /val/ is returned.
 // @input code the character to look for.
 // @input val the return value if /code/ is not found.
-float parseNumber(char code, float val) {
+int parseNumber(char code, float val) {
     char *ptr = serial_buffer;  // start at the beginning of buffer
     while ((long)ptr > 1 && (*ptr) && (long)ptr < (long)serial_buffer+sofar) {  // walk to the end
         if (*ptr == code) {  // if you find code on your walk,
@@ -75,25 +75,36 @@ void decodeMessage() {
     if (serial_buffer[0]==0) return;
 
     long cmd;
+    int x,y,f,p;
 
     cmd = parseNumber('G',-1);
     switch(cmd) {
         case 0: 
-            Serial.println("Resetting ...");
+            #ifdef VERBOSE
+            Serial.println("G00");
+            Serial.println("Reset steppers");
+            #endif
+
+            resetSteppers();
             break;
-        case 1: 
-            Serial.println(parseNumber('X',0));
-            Serial.println(parseNumber('Y',0));
-            Serial.println(parseNumber('F',0));
-            Serial.println("Draw line ...");
+        case 1:
+            x = parseNumber('X',0);
+            y = parseNumber('Y',0);
+            f = parseNumber('F',0);
+
+            #ifdef VERBOSE
+            #endif
+
+            moveToCoordinate(x,y,f);
             break;
         case 2:
-            Serial.println(parseNumber('P',0));
-            Serial.println("Actuate arm ...");
-            break;
-        case 3:
-            Serial.println(parseNumber('C',0));
-            Serial.println("Actuate claw ...");
+            p = parseNumber('P',0);
+
+            #ifdef VERBOSE
+            Serial.print("G02 P:");
+            Serial.println(p);
+            #endif
+
             break;
         default:
             break;
@@ -102,11 +113,24 @@ void decodeMessage() {
     cmd = parseNumber('M',-1);
     switch(cmd) {
         case 90:
-            Serial.println(parseNumber('X',0));
-            Serial.println(parseNumber('Y',0));
-            Serial.println("Setting Coords ...");
+            x = parseNumber('X',0);
+            y = parseNumber('Y',0);
+
+            #ifdef VERBOSE
+            Serial.print("M90 X:");
+            Serial.print(x);
+            Serial.print(" Y:");
+            Serial.println(y);
+            #endif
+
+            global_coords.x = x;
+            global_coords.y = y;
             break;
         case 100:
+            #ifdef VERBOSE
+            Serial.println("M100");
+            #endif
+
             helpMessage();
             break;
         default: break;

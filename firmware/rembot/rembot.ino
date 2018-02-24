@@ -60,27 +60,27 @@ Adafruit_StepperMotor *horizontal_stepper = AFMS0.getStepper(200, 2);
 Adafruit_StepperMotor *vertical_stepper = AFMS1.getStepper(200, 1); 
 
 // Wrappers for the horizontal_stepper
-void h_forwardstep() {
+void hForwardStep() {
     horizontal_stepper->onestep(FORWARD, DOUBLE);
     return;
 }
-void h_backwardstep() {
+void hBackwardStep() {
     horizontal_stepper->onestep(BACKWARD, DOUBLE);
     return;
 }
 // Wrappers for the left_vertical_stepper
-void v_forwardstep() {
+void vForwardStep() {
     vertical_stepper->onestep(FORWARD, DOUBLE);
     return;
 }
-void v_backwardstep() {
+void vBackwardStep() {
     vertical_stepper->onestep(BACKWARD, DOUBLE);
     return;
 }
 
 // Wrap in AccelStepper object
-AccelStepper h_stepper(h_forwardstep, h_backwardstep);
-AccelStepper v_stepper(v_forwardstep, v_backwardstep);
+AccelStepper hStepper(hForwardStep, hBackwardStep);
+AccelStepper vStepper(vForwardStep, vBackwardStep);
 
 
 // Program methods

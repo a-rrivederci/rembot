@@ -23,7 +23,7 @@ void setup() {
 void stopHorizontalMotor()
 {
     //horizontal_stepper->stop();
-    h_stepper.stop();
+    hStepper.stop();
     //Serial.println("works_horiz");
     return;
 }

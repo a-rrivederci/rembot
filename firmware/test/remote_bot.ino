@@ -60,11 +60,11 @@ Adafruit_StepperMotor *left_vertical_stepper = AFMS1.getStepper(200, 1);
 Adafruit_StepperMotor *right_vertical_stepper = AFMS1.getStepper(200, 2);
 
 // Wrappers for the horizontal_stepper
-void h_forwardstep() {
+void hForwardStep() {
     horizontal_stepper->onestep(FORWARD, DOUBLE);
     return;
 }
-void h_backwardstep() {
+void hBackwardStep() {
     horizontal_stepper->onestep(BACKWARD, DOUBLE);
     return;
 }
@@ -90,7 +90,7 @@ void rv_backwardstep() {
 }
 
 // Wrap in AccelStepper object
-AccelStepper h_stepper(h_forwardstep, h_backwardstep);
+AccelStepper hStepper(hForwardStep, hBackwardStep);
 AccelStepper lv_stepper(lv_forwardstep, lv_backwardstep);
 AccelStepper rv_stepper(rv_forwardstep, rv_backwardstep);
 
@@ -132,16 +132,16 @@ void loop() {
 void serialEvent() {
     switch(Serial.read()) {
         case 'U': // go up
-            go_up();
+            goUp();
             break;
         case 'J': // go down
-            go_down();
+            goDown();
             break;
         case 'H': // go left
-            go_left();
+            goLeft();
             break;
         case 'K': // go right
-            go_right();
+            goRight();
             break;
         case 'W': // raise arm
             arm_raise();
@@ -163,7 +163,7 @@ void serialEvent() {
 
 // Custom methods
 // Motor
-void go_up() {
+void goUp() {
     step = STEP;
     lv_stepper.setMaxSpeed(MAX_SPEED);
     lv_stepper.setAcceleration(Y_ACCEL);
@@ -182,7 +182,7 @@ void go_up() {
     return;
 }
 
-void go_down() {
+void goDown() {
     step = -1*STEP;
     lv_stepper.setMaxSpeed(MAX_SPEED);
     lv_stepper.setAcceleration(Y_ACCEL);
@@ -201,11 +201,11 @@ void go_down() {
     return;
 }
 
-void go_left() {
+void goLeft() {
     step = STEP;
-    h_stepper.setMaxSpeed(MAX_SPEED);
-    h_stepper.setAcceleration(X_ACCEL);
-    h_stepper.moveTo(h_stepper.currentPosition() - step);
+    hStepper.setMaxSpeed(MAX_SPEED);
+    hStepper.setAcceleration(X_ACCEL);
+    hStepper.moveTo(hStepper.currentPosition() - step);
 
     #if VERBOSE == 1
     Serial.println("Going left ... ");
@@ -216,11 +216,11 @@ void go_left() {
     return;
 }
 
-void go_right() {
+void goRight() {
     step = -1*STEP;
-    h_stepper.setMaxSpeed(MAX_SPEED);
-    h_stepper.setAcceleration(Y_ACCEL);
-    h_stepper.moveTo(h_stepper.currentPosition() - step);
+    hStepper.setMaxSpeed(MAX_SPEED);
+    hStepper.setAcceleration(Y_ACCEL);
+    hStepper.moveTo(hStepper.currentPosition() - step);
 
     #if VERBOSE == 1
     Serial.println("Going right ... ");
@@ -235,11 +235,11 @@ void run_motors() {
     bool flag = true;
     while(flag == true) {
         flag = false;
-        if (h_stepper.distanceToGo() != 0) {
+        if (hStepper.distanceToGo() != 0) {
             #if VERBOSE == 1
             Serial.println("Running horizontal_stepper ... ");
             #endif
-            h_stepper.run();
+            hStepper.run();
             flag = true;
         }
         if (lv_stepper.distanceToGo() != 0) {
@@ -409,14 +409,14 @@ void move_steppers(int pos_x1,int pos_x2,int pos_y1, int pos_y2,int dirX,int dir
         rv_stepper.moveTo(-rv_stepper.currentPosition()-deg_x);
     }
     if (dirY = 1) {
-        h_stepper.setMaxSpeed(custom_speed);
-        h_stepper.setAcceleration(Y_ACCEL);
-        h_stepper.moveTo(-h_stepper.currentPosition()-deg_y);
+        hStepper.setMaxSpeed(custom_speed);
+        hStepper.setAcceleration(Y_ACCEL);
+        hStepper.moveTo(-hStepper.currentPosition()-deg_y);
     }
     if (dirY = 0) {
-        h_stepper.setMaxSpeed(custom_speed);
-        h_stepper.setAcceleration(Y_ACCEL);
-        h_stepper.moveTo(-h_stepper.currentPosition()-deg_y);
+        hStepper.setMaxSpeed(custom_speed);
+        hStepper.setAcceleration(Y_ACCEL);
+        hStepper.moveTo(-hStepper.currentPosition()-deg_y);
     }
 
     return;

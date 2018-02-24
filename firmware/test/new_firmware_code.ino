@@ -54,28 +54,28 @@ Adafruit_StepperMotor *horizontal_stepper = AFMS0.getStepper(200, 2);
 Adafruit_StepperMotor *vertical_stepper = AFMS1.getStepper(200, 1); 
 
 // Wrappers for the horizontal_stepper
-void h_forwardstep() {
+void hForwardStep() {
     horizontal_stepper->onestep(FORWARD, DOUBLE);
     return;
 }
-void h_backwardstep() {
+void hBackwardStep() {
     horizontal_stepper->onestep(BACKWARD, DOUBLE);
     return;
 }
 
 // Wrappers for the left_vertical_stepper
-void v_forwardstep() {
+void vForwardStep() {
     vertical_stepper->onestep(FORWARD, DOUBLE);
     return;
 }
-void v_backwardstep() {
+void vBackwardStep() {
     vertical_stepper->onestep(BACKWARD, DOUBLE);
     return;
 }
 
 // Wrap in AccelStepper object
-AccelStepper h_stepper(h_forwardstep, h_backwardstep);
-AccelStepper v_stepper(lv_forwardstep, lv_backwardstep);
+AccelStepper hStepper(hForwardStep, hBackwardStep);
+AccelStepper vStepper(lv_forwardstep, lv_backwardstep);
 
 // Program methods
 void setup() {
@@ -100,123 +100,123 @@ void setup() {
 }
 // Custom methods
 // Motor
-void go_up() {
+void goUp() {
     step = STEP;
-    v_stepper.setMaxSpeed(MAX_SPEED);
-    v_stepper.setAcceleration(Y_ACCEL);
-    v_stepper.moveTo(v_stepper.currentPosition() - step);
+    vStepper.setMaxSpeed(MAX_SPEED);
+    vStepper.setAcceleration(Y_ACCEL);
+    vStepper.moveTo(vStepper.currentPosition() - step);
     
     #if VERBOSE == 1
     Serial.println("Going up ... ");
     #endif
 
-    v_stepper.runToPosition();
+    vStepper.runToPosition();
 
     Coordinate.y -= 1;
 
     return;
 }
 
-void go_down() {
+void goDown() {
     step = -1*STEP;
-    v_stepper.setMaxSpeed(MAX_SPEED);
-    v_stepper.setAcceleration(Y_ACCEL);
-    v_stepper.moveTo(v_stepper.currentPosition() - step);
+    vStepper.setMaxSpeed(MAX_SPEED);
+    vStepper.setAcceleration(Y_ACCEL);
+    vStepper.moveTo(vStepper.currentPosition() - step);
 
     #if VERBOSE == 1
     Serial.println("Going down ... ");
     #endif
 
-    v_stepper.runToPosition();
+    vStepper.runToPosition();
 
     Coordinate.y += 1;
 
     return;
 }
 
-void go_left() {
+void goLeft() {
     step = STEP;
-    h_stepper.setMaxSpeed(MAX_SPEED);
-    h_stepper.setAcceleration(X_ACCEL);
-    h_stepper.moveTo(h_stepper.currentPosition() - step);
+    hStepper.setMaxSpeed(MAX_SPEED);
+    hStepper.setAcceleration(X_ACCEL);
+    hStepper.moveTo(hStepper.currentPosition() - step);
 
     #if VERBOSE == 1
     Serial.println("Going left ... ");
     #endif
 
-    h_stepper.runToPosition();
+    hStepper.runToPosition();
 
     Coordinate.x -= 1;
     return;
 }
 
-void go_right() {
+void goRight() {
     step = -1*STEP;
-    h_stepper.setMaxSpeed(MAX_SPEED);
-    h_stepper.setAcceleration(Y_ACCEL);
-    h_stepper.moveTo(h_stepper.currentPosition() - step);
+    hStepper.setMaxSpeed(MAX_SPEED);
+    hStepper.setAcceleration(Y_ACCEL);
+    hStepper.moveTo(hStepper.currentPosition() - step);
 
     #if VERBOSE == 1
     Serial.println("Going right ... ");
     #endif
 
-    h_stepper.runToPosition();
+    hStepper.runToPosition();
 
     Coordinate.x += 1;
 
     return;
 }
 
-void reset_steppers() {
+void resetSteppers() {
 
     #if VERBOSE == 1
     Serial.println("Going to limit switches ... ");
     #endif
 
     for(int i = 0; i < 10000; i++)
-        go_up();
+        goUp();
     for(int i = 0; i < 2000; i++)
-        go_left();
+        goLeft();
     
     Coordinate.x = 0;
     Coordinate.y = 0;
     //step = STEP;
-    //v_stepper.setMaxSpeed(MAX_SPEED);
-    //v_stepper.setAcceleration(Y_ACCEL);
-    //v_stepper.moveTo(v_stepper.currentPosition() - 10000000*step);
+    //vStepper.setMaxSpeed(MAX_SPEED);
+    //vStepper.setAcceleration(Y_ACCEL);
+    //vStepper.moveTo(vStepper.currentPosition() - 10000000*step);
 
-    //h_stepper.setMaxSpeed(MAX_SPEED);
-    //h_stepper.setAcceleration(Y_ACCEL);
-    //h_stepper.moveTo(v_stepper.currentPosition() + 10000000*step);
+    //hStepper.setMaxSpeed(MAX_SPEED);
+    //hStepper.setAcceleration(Y_ACCEL);
+    //hStepper.moveTo(vStepper.currentPosition() + 10000000*step);
 
-    //v_stepper.runToPosition();
-    //h_stepper.runToPosition();
+    //vStepper.runToPosition();
+    //hStepper.runToPosition();
 
     return;
 }
 
-void find_corner() {
+void findCorner() {
 
     #if VERBOSE == 1
     Serial.println("Finding corner of the page ... ");
     #endif
 
     for(int i = 0; i < 7500; i++)
-        go_down();
+        goDown();
     for(int i = 0; i < 500; i++)
-        go_right();
+        goRight();
 
     //step = STEP;
-    //v_stepper.setMaxSpeed(MAX_SPEED);
-    //v_stepper.setAcceleration(Y_ACCEL);
-    //v_stepper.moveTo(v_stepper.currentPosition() + 7500*step);
+    //vStepper.setMaxSpeed(MAX_SPEED);
+    //vStepper.setAcceleration(Y_ACCEL);
+    //vStepper.moveTo(vStepper.currentPosition() + 7500*step);
 
-    //h_stepper.setMaxSpeed(MAX_SPEED);
-    //h_stepper.setAcceleration(Y_ACCEL);
-    //h_stepper.moveTo(v_stepper.currentPosition() - 500*step);
+    //hStepper.setMaxSpeed(MAX_SPEED);
+    //hStepper.setAcceleration(Y_ACCEL);
+    //hStepper.moveTo(vStepper.currentPosition() - 500*step);
 
-    //v_stepper.runToPosition();
-    //h_stepper.runToPosition();
+    //vStepper.runToPosition();
+    //hStepper.runToPosition();
 
     return;
 }
@@ -227,39 +227,39 @@ void find_corner() {
     Serial.println("Going to the beginnig of the margin ... ");
     #endif
     
-    go_down();
+    goDown();
 
     for(int i = 0; i < 1000; i++)
-        go_left();
+        goLeft();
     
     //step = STEP;
 
-    //v_stepper.setMaxSpeed(MAX_SPEED);
-    //v_stepper.setAcceleration(Y_ACCEL);
-    //v_stepper.moveTo(v_stepper.currentPosition() + step);
+    //vStepper.setMaxSpeed(MAX_SPEED);
+    //vStepper.setAcceleration(Y_ACCEL);
+    //vStepper.moveTo(vStepper.currentPosition() + step);
 
-    //h_stepper.setMaxSpeed(MAX_SPEED);
-    //h_stepper.setAcceleration(Y_ACCEL);
-    //h_stepper.moveTo(v_stepper.currentPosition() + 50000*step);
+    //hStepper.setMaxSpeed(MAX_SPEED);
+    //hStepper.setAcceleration(Y_ACCEL);
+    //hStepper.moveTo(vStepper.currentPosition() + 50000*step);
 
-    //h_stepper.runToPosition();
+    //hStepper.runToPosition();
 
     return;
 }*/
 
-void move_to_coordinate(int X, int Y){ //absolute not relative 
+void moveToCoordinate(int X, int Y){ //absolute not relative 
     if(Coordinate.x < X)
         while(Coordinate.x != X)
-            go_right();
+            goRight();
     else 
         while(Coordinate.x != X)
-            go_left();
+            goLeft();
     if(Coordinate.y < Y)
         while(Coordinate.y != Y)
-            go_down();
+            goDown();
     else 
         while(Coordinate.y != Y)
-            go_up();
+            goUp();
 }
 
 
