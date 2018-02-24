@@ -107,6 +107,7 @@ void setup() {
     AFMS0.begin();
     AFMS1.begin();
 
+    // Reset bot
     // Begin program
     serialReady(); 
 }
