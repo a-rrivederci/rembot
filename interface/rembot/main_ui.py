@@ -171,5 +171,5 @@ class AboutDialog(QWidget):
     def retranslate_ui(self):
         ''' Text content '''
         _translate = QCoreApplication.translate
-        self.setWindowTitle(_translate("about_dialog", "Rembot v0.0.1"))
-        self.about_system_label.setText(_translate("about_dialog", "REMBOT Interface\nv0.0.1"))
+        self.setWindowTitle(_translate("about_dialog", "Rembot v0.1.0"))
+        self.about_system_label.setText(_translate("about_dialog", "REMBOT Interface\nv0.1.0"))

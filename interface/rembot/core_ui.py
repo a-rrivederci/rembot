@@ -202,9 +202,9 @@ class CoreUI(QWidget):
         self.original_img = QLabel(self.original_img_box)
         self.original_img.setMinimumSize(QSize(720, 400))
         self.original_img.setText("")
-        default = self.assets_path + "default.jpg"
-        self.original_img.setPixmap(QPixmap(default))
-        self.original_img.setScaledContents(True)
+        self.default_img = self.assets_path + "default.jpg"
+        self.original_img.setPixmap(QPixmap(self.default_img))
+        # self.original_img.setScaledContents(True)
         self.original_img.setObjectName("original_img")
         #### Add Original image to Original image Layout
         self.original_img_layout.addWidget(self.original_img)
@@ -221,10 +221,9 @@ class CoreUI(QWidget):
         self.output_img_layout.setObjectName("output_img_layout")
         ##### Output image
         self.output_img = QLabel(self.output_img_box)
-        self.output_img.setMinimumSize(QSize(720, 400))
+        # self.output_img.setMinimumSize(QSize(720, 400))
         self.output_img.setText("")
-        self.output_img.setPixmap(QPixmap(default))
-        self.output_img.setScaledContents(True)
+        self.output_img.setPixmap(QPixmap(self.default_img))
         self.output_img.setObjectName("output_img")
         #### Add Output img to output image layout
         self.output_img_layout.addWidget(self.output_img)
@@ -260,6 +259,11 @@ class CoreUI(QWidget):
         self.original_img_box.setTitle(self._translate("CoreUI", "Original Image"))
         self.output_img_box.setTitle(self._translate("CoreUI", "Output Image"))
 
+        # Default images
+        self.default_img = self.assets_path + "default.jpg"
+        self.original_img.setPixmap(QPixmap(self.default_img))
+        self.output_img.setPixmap(QPixmap(self.default_img))
+
     def attach_events(self):
         ''' Attach signals to events '''
         self.start_button.clicked.connect(self.start)
@@ -289,7 +293,10 @@ class CoreUI(QWidget):
         self.stop_button.setEnabled(False) # disable Stop
         self.abort_button.setEnabled(False) # disable abort
         self.start_button.setEnabled(True) # enable start
-
+        
+        # Reset images
+        self.original_img.setPixmap(QPixmap(self.default_img))
+        self.original_img.setPixmap(QPixmap(self.default_img))
         self.log.info_log("Process done!") # log
         self.update_status("Ready")
 
