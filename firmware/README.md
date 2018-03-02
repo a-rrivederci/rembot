@@ -4,10 +4,8 @@ Below is a table for the `G-Codes` to control the bot
 
 | Action | Command |
 | --- | --- |
-| Reset | `G0` |
-| Move bot in line | `G1 X[(value)] Y[(value)] F[(speed)]` |
-| Lift Pen | `G2 P0` |
-| Drop pen | `G2 P1` |
+| Move Rapid To position | `G0 X[(value)] Y[(value)] Z[(value)]` |
+| Move bot in line | `G1 X[(value)] Y[(value)] Z[(value)] F[(speed)]` |
 | Set bot postition | `M90 X[(value)] Y[(value)]` |
 | Display info | `M100` |
 
@@ -22,9 +20,8 @@ M100
 M100
 Rembot Firmare v0.1.0
 Commands:
-G00 - Reset
-G01 X[(steps)] Y[(steps)] F[(speed)] - line
-G02 P[(arm)] - arm
+G00 X[(steps)] Y[(steps)] Z[(pen)] F[(speed)] - Rapid Motion
+G01 X[(steps)] Y[(steps)] Z[(pen)] F[(speed)] - Common Motion
 M90 X[(steps)] Y[(steps)] - Set position
 M100 - this help message
 
