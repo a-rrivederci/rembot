@@ -5,7 +5,7 @@ Below is a table for the `G-Codes` to control the bot
 | Action | Command |
 | --- | --- |
 | Reset | `G0` |
-| Move bot in line | `G1 X[<value>] Y[(value)] F[(speed)]` |
+| Move bot in line | `G1 X[(value)] Y[(value)] F[(speed)]` |
 | Lift Pen | `G2 P0` |
 | Drop pen | `G2 P1` |
 | Set bot postition | `M90 X[(value)] Y[(value)]` |
