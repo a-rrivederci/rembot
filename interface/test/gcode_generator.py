@@ -32,8 +32,7 @@ class GCode(object):
     def begin(self):
         ''' Setup GCODE '''
         self.write(self.pre_script)
-        self.write("M100")
-        self.write(";START")
+        self.write("M90 X0.0000 Y0.0000")
 
     def end(self):
         ''' End gcode generation '''
@@ -257,6 +256,6 @@ if __name__ == "__main__":
         y_offset
     )
 
-    sys.stdout = open('interface/test/assets/gcodes.txt', 'w')
+    sys.stdout = open('assets/rembot.move', 'w')
     codes = GCODE.generate()
     sys.stdout.close
