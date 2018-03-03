@@ -14,8 +14,8 @@ from PyQt5.QtGui import QFont, QIcon, QPixmap
 from PyQt5.QtWidgets import (QAction, QDesktopWidget, QMainWindow, QMenu, \
                              QMessageBox, QSizePolicy, QWidget, QVBoxLayout, 
                              QHBoxLayout, QLabel)
-from core_ui import CoreUI
-from stats import Log
+from .core_ui import CoreUI
+from .stats import Log
 
 
 class MainUI(QMainWindow):

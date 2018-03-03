@@ -17,8 +17,8 @@ import cv2 as cv
 import numpy as np
 from math import floor
 
-from stats import Log
-from comms import Arduino
+from .stats import Log
+from .comms import Arduino
 
 import serial.tools.list_ports
 from PyQt5.QtCore import QObject, pyqtSignal
