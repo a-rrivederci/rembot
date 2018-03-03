@@ -37,7 +37,7 @@ class CoreUI(QWidget):
         self.linebot.moveToThread(self.bot_thread)
         self.linebot.message[str].connect(self.linebot.log.info_log) # linebot stderr log
         self.linebot.log.log_data[str].connect(self.to_log) # display ability logger in ui
-        self.linebot.end_flag.connect(self.bot_thread.quit)
+        self.linebot.end_FLAG.connect(self.bot_thread.quit)
         self.bot_thread.started.connect(self.linebot.run)
         self.bot_thread.finished.connect(self.bot_process_done)
 

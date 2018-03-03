@@ -27,7 +27,7 @@ from PyQt5.QtCore import QObject, pyqtSignal
 class Ability(QObject):
     ''' Rembot Ability class'''
     message = pyqtSignal(str) # messages to be passed to the core_ui
-    end_flag = pyqtSignal() # signal to signify end thread flag
+    end_FLAG = pyqtSignal() # signal to signify end thread FLAG
     start_time = 0
     assets_path = "interface/rembot/assets/"
 
@@ -70,10 +70,10 @@ class LineBot(Ability):
             self.start_time = time.time()
             ret = self.start()
             self.process_done(ret)
-            self.end_flag.emit()
+            self.end_FLAG.emit()
         else:
             self.message.emit("No ports available")
-            self.end_flag.emit()
+            self.end_FLAG.emit()
         return
 
     def start(self):

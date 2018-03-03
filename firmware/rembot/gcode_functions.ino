@@ -18,11 +18,11 @@ void serialEvent() {
             serial_buffer[sofar++] = inChar;
         }
 
-        // if the incoming character is a newline, set a flag so the main loop can
+        // if the incoming character is a newline, set a FLAG so the main loop can
         // do something about it
         if (inChar == '\n') {
             serial_buffer[sofar] = 0;  // end the buffer so string functions work right
-            line_complete = 1;
+            LINE_COMPLETE = 1;
         }
     }
 }
@@ -36,12 +36,11 @@ void helpMessage() {
     Serial.print(F("."));
     Serial.println(VERSION_PATCH);
     Serial.println(F("Commands:"));
-    Serial.println(F("G00 - Reset"));
-    Serial.println(F("G01 X[(steps)] Y[(steps)] F[(speed)] - line"));
-    Serial.println(F("G02 P[(arm)] - arm"));
-    Serial.println(F("G03 C[(claw)] - claw"));
-    Serial.println(F("M90 X[(steps)] Y[(steps)] - Set position"));
+    Serial.println(F("G00 X[(value)] Y[(value)] Z[(value)] F[(speed)] - Rapid motion"));
+    Serial.println(F("G01 X[(value)] Y[(value)] Z[(value)] F[(speed)] - Normal motion"));
+    Serial.println(F("M90 X[(value)] Y[(value)] - Set position"));
     Serial.println(F("M100 - this help message"));
+    Serial.println(F(" "));
     Serial.println(F("All commands must end with a newline.")); 
 }
 
@@ -49,7 +48,7 @@ void helpMessage() {
 // and tells the serial connected device it is ready for more.
 void serialReady() {
     sofar = 0;
-    line_complete = 0;
+    LINE_COMPLETE = 0;
     Serial.print(F(">"));  // signal ready to receive input
 }
 
@@ -72,43 +71,81 @@ float parseNumber(char code, float val) {
 // One G or M command per line.
 void decodeMessage() {
     // blank lines
-    if (serial_buffer[0]==0) return;
+    if (serial_buffer[0]==';') return;
 
     long cmd;
+    float x,y,z,f;
 
     cmd = parseNumber('G',-1);
     switch(cmd) {
-        case 0: 
-            Serial.println("Resetting ...");
+        case 0:
+            x = parseNumber('X',0);
+            y = parseNumber('Y',0);
+            z = parseNumber('Z',0);
+            
+
+            #ifdef VERBOSE
+            Serial.print(F("G1 X"));
+            Serial.print(x)
+            Serial.print(F(" "));
+            Serial.print(F("G1 Y"));
+            Serial.print(y)
+            Serial.print(F(" "));
+            Serial.print(F("G1 Z"));
+            Serial.println(z)
+            #endif
+
+            actuateMotors(x,y,z);
             break;
-        case 1: 
-            Serial.println(parseNumber('X',0));
-            Serial.println(parseNumber('Y',0));
-            Serial.println(parseNumber('F',0));
-            Serial.println("Draw line ...");
+
+        case 1:
+            x = parseNumber('X',0);
+            y = parseNumber('Y',0);
+            z = parseNumber('Z',0);
+            f = parseNumber('F',0);
+
+            #ifdef VERBOSE
+            Serial.print(F("G1 X"));
+            Serial.print(x)
+            Serial.print(F(" Y"));
+            Serial.print(y)
+            Serial.print(F(" Z"));
+            Serial.print(z)
+            Serial.print(F(" F"));
+            Serial.println(f)
+            #endif
+
+            actuateMotors(x,y,z,f);
             break;
-        case 2:
-            Serial.println(parseNumber('P',0));
-            Serial.println("Actuate arm ...");
-            break;
-        case 3:
-            Serial.println(parseNumber('C',0));
-            Serial.println("Actuate claw ...");
-            break;
-        default:
-            break;
+
+        default: break;
     }
 
     cmd = parseNumber('M',-1);
     switch(cmd) {
         case 90:
-            Serial.println(parseNumber('X',0));
-            Serial.println(parseNumber('Y',0));
-            Serial.println("Setting Coords ...");
+            x = parseNumber('X',0);
+            y = parseNumber('Y',0);
+
+            #ifdef VERBOSE
+            Serial.print("M90 X");
+            Serial.print(x);
+            Serial.print(" Y");
+            Serial.println(y);
+            #endif
+
+            global_coords.X = x;
+            global_coords.Y = y;
             break;
+
         case 100:
+            #ifdef VERBOSE
+            Serial.println("M100");
+            #endif
+
             helpMessage();
             break;
+            
         default: break;
     }
 }

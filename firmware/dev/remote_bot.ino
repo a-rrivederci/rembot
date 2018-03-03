@@ -36,15 +36,14 @@
 Servo arm_servo; // servo1
 Servo claw_servo; //servo2
 
-// Flags
+// FLAGs
 byte CONNECTED = 0; //false
-byte ARM_IS_RAISED = 0; // false;
+byte ARM_STATUS = 0; // false;
 byte CLAW_IS_OPEN = 1; // false;
 
 // Program variables
 double X_ACCEL = 100.0;
 double Y_ACCEL = 100.0;
-char cmd;
 int step;
 
 // Adafruit MotorShield AFMS bottom - 0 and AFSM top - 1
@@ -232,29 +231,29 @@ void goRight() {
 }
 
 void run_motors() {
-    bool flag = true;
-    while(flag == true) {
-        flag = false;
+    bool FLAG = true;
+    while(FLAG == true) {
+        FLAG = false;
         if (hStepper.distanceToGo() != 0) {
             #if VERBOSE == 1
             Serial.println("Running horizontal_stepper ... ");
             #endif
             hStepper.run();
-            flag = true;
+            FLAG = true;
         }
         if (lv_stepper.distanceToGo() != 0) {
             #if VERBOSE == 1
             Serial.println("Running left_vertical_stepper ... ");
             #endif
             lv_stepper.run();
-            flag = true;
+            FLAG = true;
         }
         if (rv_stepper.distanceToGo() != 0) {
             #if VERBOSE == 1
             Serial.println("Running right_vertical_stepper ... ");
             #endif
             rv_stepper.run();
-            flag = true;
+            FLAG = true;
         }
 
     }
@@ -269,7 +268,7 @@ void run_motors() {
 // Effector
 void arm_raise() {
     // Check if arm is raised
-    if (ARM_IS_RAISED != 0) {
+    if (ARM_STATUS != 0) {
         #if VERBOSE == 1
         Serial.println("Arm is already raised\n");
         #endif
@@ -287,7 +286,7 @@ void arm_raise() {
     //arm_servo.write(90);
     arm_servo.detach();
 
-    ARM_IS_RAISED = 1;
+    ARM_STATUS = 1;
 
     #if VERBOSE == 1
     Serial.println("Arm is raised\n");
@@ -298,7 +297,7 @@ void arm_raise() {
 
 void arm_lower() {
     // Check if arm is already lowered
-    if (ARM_IS_RAISED != 1) {
+    if (ARM_STATUS != 1) {
         #if VERBOSE == 1
         Serial.println("Arm is already lowered\n");
         #endif
@@ -316,7 +315,7 @@ void arm_lower() {
     arm_servo.detach();
     //arm_servo.write(90);
 
-    ARM_IS_RAISED = 0;
+    ARM_STATUS = 0;
 
     #if VERBOSE == 1
     Serial.println("Arm is lowered\n");

@@ -9,7 +9,7 @@
 #define VERSION_MINOR 0
 #define VERSION_PATCH 0
 
-// Flags
+// FLAGs
 byte CONNECTED = 0; //false
 
 // Variables

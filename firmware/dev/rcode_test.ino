@@ -26,7 +26,7 @@
 
 char serial_buffer[MAX_BUF];  // where we store the message until we get a ';'
 byte sofar;  // how much is in the buffer
-byte line_complete; // whether the input line is complete
+byte LINE_COMPLETE; // whether the input line is complete
 
 /**
  * Read the input buffer and find any recognized commands.  One G or M command per line.
@@ -88,11 +88,11 @@ void serialEvent() {
     Serial.print(inChar);  // repeat it back so I know you got the message
     #endif
     if(sofar < MAX_BUF-1) serial_buffer[sofar++] = inChar;
-    // if the incoming character is a newline, set a flag so the main loop can
+    // if the incoming character is a newline, set a FLAG so the main loop can
     // do something about it:
     if (inChar == '\n') {
         serial_buffer[sofar] = 0;  // end the buffer so string functions work right
-        line_complete = 1;
+        LINE_COMPLETE = 1;
     }
   }
 }
@@ -123,7 +123,7 @@ void help() {
  */
 void ready() {
     sofar = 0;
-    line_complete = 0;
+    LINE_COMPLETE = 0;
     Serial.print(F(">"));  // signal ready to receive input
 }
 
@@ -153,7 +153,7 @@ void setup() {
 
 void loop() {
     // print the string when a newline arrives:
-    if (line_complete) {
+    if (LINE_COMPLETE) {
         Serial.println("S"); // Success message
         #ifdef DEBUG
         Serial.println(serial_buffer);

@@ -39,7 +39,6 @@ struct Coordinate{
 // Program variables
 double X_ACCEL = 100.0;
 double Y_ACCEL = 100.0;
-char cmd;
 int step;
 
 // Adafruit MotorShield AFMS bottom - 0 and AFSM top - 1

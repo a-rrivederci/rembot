@@ -1,5 +1,7 @@
 # Communications Protocol :one::one::zero::one:
 
+## GCODE Subset
+
 Below is a table for the `G-Codes` to control the bot
 
 | Action | Command |
@@ -15,7 +17,6 @@ Send `command` -> Receive `S` -> Receive `debug message`
 ```
 >M100
 S
-M100
 
 M100
 Rembot Firmare v0.1.0
@@ -27,9 +28,5 @@ M100 - this help message
 
 All commands must end with a newline.
 
->G02 P0
-S
-G02 P0
-
-G02 P:0
+>
 ```

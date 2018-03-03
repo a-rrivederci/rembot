@@ -1,4 +1,2 @@
-nose
 pyqt5
 pyserial
-sphinx

@@ -7,3 +7,4 @@ Tracking changes in the firmware
 - Added firmware test file
 - Created Rembot folder
 - Added `remote_bot` implementation
+- Split up firmware code into multiple files
