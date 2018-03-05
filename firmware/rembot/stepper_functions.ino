@@ -76,7 +76,7 @@ void goRight() {
 void liftPen() {
     // Check if arm is raised
     if (ARM_STATUS != 0) {
-        #if VERBOSE
+        #ifdef VERBOSE
         Serial.println("Arm is already raised\n");
         #endif
 
@@ -94,7 +94,7 @@ void liftPen() {
 
     ARM_STATUS = 1;
 
-    #if VERBOSE
+    #ifdef VERBOSE
     Serial.println("Arm is raised\n");
     #endif
 
@@ -104,7 +104,7 @@ void liftPen() {
 void dropPen() {
     // Check if arm is already lowered
     if (ARM_STATUS != 1) {
-        #if VERBOSE == 1
+        #ifdef VERBOSE
         Serial.println("Arm is already lowered\n");
         #endif
 
@@ -122,7 +122,7 @@ void dropPen() {
 
     ARM_STATUS = 0;
 
-    #if VERBOSE == 1
+    #ifdef VERBOSE
     Serial.println("Arm is lowered\n");
     #endif
 
@@ -190,13 +190,13 @@ void actuateSteppers(float X = global_coords.X, float Y = global_coords.Y, float
     hStepper.moveTo(-hStepper.currentPosition() - dx);
 
     vStepper.setMaxSpeed(F);
-    vStepper.moveTo(-lStepper.currentPosition() - dy);
+    vStepper.moveTo(-vStepper.currentPosition() - dy);
 
-    penControl(Z);
+    heightControl(Z);
 
     // Update with end global position
-    global_coords.X = X
-    global_coords.Y = Y
+    global_coords.X = X;
+    global_coords.Y = Y;
 
     return ;
 }
@@ -210,12 +210,8 @@ void runSteppers() {
             hStepper.runSpeed();
             FLAG = 1;
         }
-        if (lStepper.distanceToGo() != 0) {
-            lStepper.runSpeed();
-            FLAG = 1;
-        }
-        if (rStepper.distanceToGo() != 0) {
-            rStepper.runSpeed();
+        if (vStepper.distanceToGo() != 0) {
+            vStepper.runSpeed();
             FLAG = 1;
         }
     }

@@ -47,6 +47,8 @@ struct Coordinates{
     float Y = -1;
 } global_coords;
 
+// Objects
+Servo arm_servo; // Z-axis servo
 
 // Adafruit MotorShield AFMS bottom - 0 and AFSM top - 1
 Adafruit_MotorShield AFMS0(0x60); // default address, no jumpers
@@ -80,6 +82,10 @@ void vBackwardStep() {
 // Wrap in AccelStepper object
 AccelStepper hStepper(hForwardStep, hBackwardStep);
 AccelStepper vStepper(vForwardStep, vBackwardStep);
+
+// Function headers for non sequencial headers
+// Place header here if file compilation order places a use before its initialization
+void actuateSteppers(float X = global_coords.X, float Y = global_coords.Y, float Z = 0, float F = MAX_SPEED);
 
 
 // Program methods

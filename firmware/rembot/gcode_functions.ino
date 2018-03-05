@@ -86,16 +86,16 @@ void decodeMessage() {
 
             #ifdef VERBOSE
             Serial.print(F("G1 X"));
-            Serial.print(x)
+            Serial.print(x);
             Serial.print(F(" "));
             Serial.print(F("G1 Y"));
-            Serial.print(y)
+            Serial.print(y);
             Serial.print(F(" "));
             Serial.print(F("G1 Z"));
-            Serial.println(z)
+            Serial.println(z);
             #endif
 
-            actuateMotors(x,y,z);
+            actuateSteppers(x,y,z);
             break;
 
         case 1:
@@ -106,16 +106,16 @@ void decodeMessage() {
 
             #ifdef VERBOSE
             Serial.print(F("G1 X"));
-            Serial.print(x)
+            Serial.print(x);
             Serial.print(F(" Y"));
-            Serial.print(y)
+            Serial.print(y);
             Serial.print(F(" Z"));
-            Serial.print(z)
+            Serial.print(z);
             Serial.print(F(" F"));
-            Serial.println(f)
+            Serial.println(f);
             #endif
 
-            actuateMotors(x,y,z,f);
+            actuateSteppers(x,y,z,f);
             break;
 
         default: break;
