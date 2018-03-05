@@ -56,7 +56,7 @@ class LineBot(Ability):
         ports = list(serial.tools.list_ports.comports())
         for portString in ports:
             # If uno is found in string
-            if 'Arduino Uno' in portString:
+            if 'Arduino Uno' in str(portString):
                 # Find out com port and connect
                 port = seq.match(portString).group()
                 self.arduino = Arduino(__class__, port)
