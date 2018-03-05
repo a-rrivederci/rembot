@@ -49,7 +49,7 @@ void helpMessage() {
 void serialReady() {
     sofar = 0;
     LINE_COMPLETE = 0;
-    Serial.print(F(">"));  // signal ready to receive input
+    Serial.println(F(">"));  // signal ready to receive input
 }
 
 // Look for character /code/ in the buffer and read the float that immediately follows it.

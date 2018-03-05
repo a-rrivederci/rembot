@@ -97,29 +97,41 @@ def main():
 
     codes = GCODE.generate()
 
-    assets_path = os.path.join( os.path.dirname(os.path.abspath(sys.argv[0])), "assets" )
-    agent_code_file = os.path.join( assets_path, "rembot.acode" )
-    out = open(agent_code_file, 'w')
-    for code in codes:
-        out.write(code)
-    out.close()
-    
-    # for cmd in codes:
-    #     while(1):
-    #         _m = arduino.read_str_data()
-    #         if _m == '>':
-    #             break
-    #         else:
-    #             MCU_LOGGER.info(_m)
-    #     if DEBUG:
-    #         PY_LOGGER.info("Sending {}".format(cmd))
-        
-    #     arduino.send_str_data(cmd)
+    if DEBUG:
+        # assets_path = os.path.join( os.path.dirname(os.path.abspath(sys.argv[0])), "assets" )
+        # agent_code_file = os.path.join( assets_path, "rembot.acode" )
+        # out = open(agent_code_file, 'w')
+        # for code in codes:
+        #     out.write(code)
+        # out.close()
 
-    #     sleep(.1)
+        print(codes)
+
+    for cmd in codes:
+        # Continue until loop is broken
+        done = False
+        while(not done):
+            # Read line and save message
+            _m = arduino.read_str_data()
+            # If message is ready message
+            # break loop and send next code
+            # If it is any other message then log it.
+            if _m == '>':
+                done = True
+            else:
+                MCU_LOGGER.info(_m)
+
+        if DEBUG:
+            PY_LOGGER.info("Sending {}".format(cmd))
         
-    #     while(arduino.read_str_data() != 'S'):
-    #         pass
+        # Send command
+        arduino.send_str_data(cmd)
+        sleep(2)
+
+        # Wait unitl success message
+        while(arduino.read_str_data() != 'S'):
+            continue
+
     return
 
 if __name__ == "__main__":
